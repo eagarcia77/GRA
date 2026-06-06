@@ -1,0 +1,32 @@
+VERIFICACIÓN REALIZADA
+
+1. Se corrigió el cambio de Marker.
+2. Se crearon tres archivos de Marker:
+   - assets/inter-sg-marker.png + .patt
+   - assets/inter-marker-generic.png + .patt
+   - assets/hiro-marker-generic.png + .patt
+3. Se actualizó el visor AR para usar el Marker seleccionado.
+4. Se actualizó el generador para dibujar el Marker correcto.
+5. Se añadió `markers.html`.
+6. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
+
+
+NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.
+
+
+Descarga individual de Markers: ahora puede descargar INTER SG, INTER y HIRO por separado, tanto en PNG como en PATT.
+
+
+Nueva función: ahora el usuario puede previsualizar el Marker grande y escogerlo visualmente antes de generar.
+
+
+Mejora visual: ahora el Marker seleccionado resalta con borde verde, insignia de seleccionado y estilo más moderno.
+
+
+Versión premium: ahora incluye tarjetas premium con iconos y animación suave al seleccionar el Marker.
+
+
+Encabezado institucional actualizado: Universidad Interamericana de Puerto Rico Recinto de San Germán.
+
+
+Actualización 3D: las imágenes ahora se muestran con un efecto visual más futurista, flotante y con apariencia 3D dentro de la experiencia de Realidad Aumentada.

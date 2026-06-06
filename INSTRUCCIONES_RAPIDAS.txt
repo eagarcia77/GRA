@@ -1,0 +1,36 @@
+GUÍA RÁPIDA – GENERADOR UNIVERSAL AR
+
+1. Abra `index.html`.
+2. Seleccione el tipo de contenido.
+3. Seleccione el tipo de Marker:
+   - Marker INTER SG
+   - Marker INTER
+   - Marker HIRO
+4. Pegue la URL.
+5. Seleccione el estilo del QR.
+6. Presione `Generar ambas imágenes`.
+7. Publique la versión integrada o separada.
+
+IMPORTANTE
+El estudiante debe apuntar al mismo Marker que usted seleccionó al generar la imagen.
+
+
+NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.
+
+
+Descarga individual de Markers: ahora puede descargar INTER SG, INTER y HIRO por separado, tanto en PNG como en PATT.
+
+
+Nueva función: ahora el usuario puede previsualizar el Marker grande y escogerlo visualmente antes de generar.
+
+
+Mejora visual: ahora el Marker seleccionado resalta con borde verde, insignia de seleccionado y estilo más moderno.
+
+
+Versión premium: ahora incluye tarjetas premium con iconos y animación suave al seleccionar el Marker.
+
+
+Encabezado institucional actualizado: Universidad Interamericana de Puerto Rico Recinto de San Germán.
+
+
+Actualización 3D: las imágenes ahora se muestran con un efecto visual más futurista, flotante y con apariencia 3D dentro de la experiencia de Realidad Aumentada.
