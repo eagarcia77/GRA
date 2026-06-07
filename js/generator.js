@@ -53,8 +53,8 @@ function refreshMarkerSelectionUI(){
   });
   if(selectedMarkerPreview) selectedMarkerPreview.src = cfg.image;
   if(selectedMarkerPreview) selectedMarkerPreview.alt = `Vista previa del Marker ${cfg.label}`;
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Actualmente está seleccionado: ${cfg.label}.`;
-  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Premium selected: ${cfg.label}`;
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Selected Marker: ${cfg.label}.`;
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Live Selected: ${cfg.label}`;
 }
 
 function extractYoutubeId(url){

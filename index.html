@@ -3,31 +3,60 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Universidad Interamericana de Puerto Rico Recinto de San Germán</title>
+  <title>Future AR Studio | Commercial Edition</title>
   <link rel="stylesheet" href="./css/app.css"/>
 </head>
 <body>
   <main class="container">
-    <section class="hero card">
+    <section class="hero card commercial-hero">
+      <div class="hero-badge">Commercial Edition</div>
       <img src="./assets/inter-marker-generic.png" class="logo-marker" alt="Marker INTER"/>
-      <div>
-        <h1>Universidad Interamericana de Puerto Rico Recinto de San Germán</h1>
+      <div class="hero-copy">
+        <p class="hero-kicker">Immersive AR Experience Builder</p>
+        <h1 class="hero-title">Future AR Studio</h1>
         <p class="institution-subtitle"><strong>Generador Realidad Aumentada</strong></p>
-        <p>Programa institucional para trabajar con <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Ahora permite escoger entre <strong>Marker INTER SG</strong>, <strong>Marker INTER</strong> y <strong>Marker HIRO</strong>. La opción <strong>Marker INTER</strong> usa un marcador que dice solamente <strong>INTER</strong>.</p>
+        <p class="hero-text">Plataforma comercial con visuales futuristas para crear experiencias de <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Incluye <strong>3D visual mode</strong>, <strong>premium QR styles</strong>, generación de <strong>Markers</strong> y exportación de recursos lista para compartir.</p>
+        <div class="hero-actions actions">
+          <a href="#builder" class="button-link">Launch Builder</a>
+          <a href="./markers.html" class="button-link secondary-link">Explore Markers</a>
+        </div>
       </div>
     </section>
 
-    <section class="alert card">
-      <h2>Opciones genéricas de Marker</h2>
-      <p>Use <strong>Marker INTER SG</strong> para San Germán, <strong>Marker INTER</strong> para otras unidades de la Inter, o <strong>Marker HIRO</strong> para una opción totalmente genérica. El programa ahora sí cambia el Marker en la imagen generada y en el visor AR.</p>
+    <section class="stats-grid">
+      <article class="stat-card">
+        <span class="stat-label">3D Visual Mode</span>
+        <strong class="stat-value">Futuristic</strong>
+        <p>Imágenes con efecto holográfico, profundidad y sensación premium.</p>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Smart Marker System</span>
+        <strong class="stat-value">3 Options</strong>
+        <p>INTER SG, INTER y HIRO con vista previa, descarga PNG y PATT.</p>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Export Ready</span>
+        <strong class="stat-value">2 Modes</strong>
+        <p>Integrated Version y separada para una experiencia flexible.</p>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Deployment</span>
+        <strong class="stat-value">GitHub + LMS</strong>
+        <p>Compatible con GitHub Pages y con enlaces del Content Collection.</p>
+      </article>
     </section>
 
-    <section class="grid">
-      <div class="card">
-        <h2>1. Crear experiencia AR</h2>
-        <p class="premium-helper">Seleccione el Marker con las tarjetas premium. Cada tarjeta tiene icono, animación suave y resaltado visual.</p>
+    <section class="alert card">
+      <h2>Flexible Marker Options</h2>
+      <p>Use <strong>Marker INTER SG</strong> para branding localizado, <strong>Marker INTER</strong> para una versión más comercial o institucional, y <strong>Marker HIRO</strong> para un flujo totalmente genérico. El sistema actualiza el Marker tanto en la imagen generada como en el visor AR.</p>
+    </section>
 
-        <label for="contentType">Tipo de contenido</label>
+    <section id="builder" class="grid">
+      <div class="card">
+        <h2>1. Build AR Experience</h2>
+        <p class="premium-helper">Construya una experiencia con una interfaz premium, tarjetas interactivas, visuales de futuro y workflow listo para negocio o educación.</p>
+
+        <label for="contentType">Content Type</label>
         <select id="contentType">
           <option value="auto">Detectar automáticamente</option>
           <option value="image">Imagen PNG/JPG/WEBP/GIF</option>
@@ -37,13 +66,13 @@
           <option value="link">Web link</option>
         </select>
 
-        <label for="markerType">Tipo de Marker</label>
+        <label for="markerType">Marker Type</label>
         <select id="markerType">
           <option value="intersg">Marker INTER SG</option>
           <option value="inter">Marker INTER (Genérico para otras Inter)</option>
           <option value="hiro">Marker HIRO (Totalmente genérico)</option>
         </select>
-        <small>También puede escoger el Marker visualmente abajo. Al hacer clic, el selector cambia automáticamente.</small>
+        <small>También puede seleccionar el Marker desde las tarjetas visuales. Al hacer clic, el selector cambia automáticamente.</small>
 
         <div class="marker-picker-grid" id="markerPickerGrid">
           <div class="marker-picker-card selected" data-marker="intersg">
@@ -71,26 +100,26 @@
             <span class="marker-preview-pill">Live Preview</span>
             <span class="marker-preview-status" id="selectedMarkerStatus">Ready</span>
           </div>
-          <h3>Vista previa del Marker seleccionado</h3>
-          <img id="selectedMarkerPreview" src="./assets/inter-sg-marker.png" alt="Vista previa del Marker seleccionado"/>
+          <h3>Selected Marker Preview</h3>
+          <img id="selectedMarkerPreview" src="./assets/inter-sg-marker.png" alt="Selected Marker Preview"/>
           <div id="selectedMarkerCaption" class="marker-preview-caption">Actualmente está seleccionado: INTER SG.</div>
         </div>
 
-        <label for="contentUrl">URL directa del contenido</label>
+        <label for="contentUrl">Content URL</label>
         <input id="contentUrl" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.pdf"/>
-        <small>Use enlaces directos del <strong>Blackboard Content Collection</strong>. Los estudiantes deben tener permiso de <strong>Read</strong>.</small>
+        <small>Use un enlace directo. Funciona con Blackboard Content Collection, GitHub Pages y otros recursos públicos compatibles.</small>
 
-        <label for="title">Título de la experiencia</label>
+        <label for="title">Experience Title</label>
         <input id="title" type="text" placeholder="Logo, video, manual PDF, rúbrica, enlace de apoyo..."/>
 
-        <label for="description">Descripción breve</label>
-        <textarea id="description" rows="3" placeholder="Escriba una instrucción corta para el estudiante."></textarea>
+        <label for="description">Short Description</label>
+        <textarea id="description" rows="3" placeholder="Escriba una instrucción o mensaje breve para el usuario final."></textarea>
 
-        <label for="baseUrl">URL base del generador</label>
+        <label for="baseUrl">Base URL</label>
         <input id="baseUrl" type="url"/>
         <small>Si esta página ya está publicada, déjela como aparece.</small>
 
-        <label for="qrStyle">Estilo del QR</label>
+        <label for="qrStyle">QR Style</label>
         <select id="qrStyle">
           <option value="classic">Classic</option>
           <option value="modern">Modern (Opción C)</option>
@@ -99,14 +128,14 @@
         </select>
 
         <div class="actions">
-          <button id="testBtn" type="button">Probar contenido</button>
-          <button id="generateBtn" type="button" class="primary">Generar ambas imágenes</button>
+          <button id="testBtn" type="button">Test Content</button>
+          <button id="generateBtn" type="button" class="primary">Generate Assets</button>
         </div>
 
         <div id="status" class="status"></div>
 
         <div id="previewWrap" class="preview-wrap hidden">
-          <h3>Vista previa</h3>
+          <h3>Live Preview</h3>
           <img id="imagePreview" class="preview hidden" alt="Vista previa"/>
           <video id="videoPreview" class="preview hidden" controls muted playsinline></video>
           <div id="youtubePreview" class="hidden">
@@ -115,42 +144,42 @@
           </div>
           <iframe id="documentPreview" class="preview-frame hidden" title="Vista previa documento"></iframe>
           <div class="actions">
-            <a id="previewOpenBtn" href="#" target="_blank" rel="noopener" class="button-link">Abrir en pestaña nueva</a>
+            <a id="previewOpenBtn" href="#" target="_blank" rel="noopener" class="button-link">Open in New Tab</a>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h2>2. Descargar imágenes únicas</h2>
-        <p>El sistema crea dos versiones: <strong>Integrada</strong> y <strong>Separada</strong>. Ambas usan el Marker seleccionado.</p>
+        <h2>2. Export Experience Assets</h2>
+        <p>El sistema crea dos versiones premium: <strong>Integrated</strong> y <strong>Separated</strong>. Ambas usan el Marker seleccionado y pueden compartirse fácilmente.</p>
 
         <div class="dual-preview-grid">
           <div class="preview-card">
-            <h3>Versión integrada</h3>
-            <div id="integratedPreview" class="preview-box"><span>La imagen integrada aparecerá aquí.</span></div>
-            <p class="mode-note">QR Code + Marker seleccionado dentro del mismo QR.</p>
+            <h3>Integrated Version</h3>
+            <div id="integratedPreview" class="preview-box"><span>The integrated visual will appear here.</span></div>
+            <p class="mode-note">QR Code + selected Marker in one single visual asset.</p>
             <div class="actions">
-              <a id="downloadIntegratedBtn" href="#" download="QR_Marker_Integrado.png" class="button-link gold disabled">Descargar integrada</a>
+              <a id="downloadIntegratedBtn" href="#" download="QR_Marker_Integrado.png" class="button-link gold disabled">Download Integrated</a>
             </div>
           </div>
           <div class="preview-card">
-            <h3>Versión separada</h3>
-            <div id="separatedPreview" class="preview-box"><span>La imagen separada aparecerá aquí.</span></div>
-            <p class="mode-note">Una sola imagen con el QR aparte y el Marker seleccionado aparte.</p>
+            <h3>Separated Version</h3>
+            <div id="separatedPreview" class="preview-box"><span>The separated visual will appear here.</span></div>
+            <p class="mode-note">One visual with a simplified QR and a larger separated Marker.</p>
             <div class="actions">
-              <a id="downloadSeparatedBtn" href="#" download="QR_Marker_Separado.png" class="button-link gold disabled">Descargar separada</a>
+              <a id="downloadSeparatedBtn" href="#" download="QR_Marker_Separado.png" class="button-link gold disabled">Download Separated</a>
             </div>
           </div>
         </div>
 
-        <label for="resultUrl">Enlace AR generado</label>
+        <label for="resultUrl">Generated AR Link</label>
         <textarea id="resultUrl" rows="4" readonly></textarea>
 
         <div class="actions">
-          <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled">Abrir experiencia AR</a>
-          <a href="./markers.html" target="_blank" rel="noopener" class="button-link">Ver Markers</a>
-          <a href="./test-marker.html" target="_blank" rel="noopener" class="button-link">Probar marcador</a>
-          <a href="./diagnostico-contenido.html" target="_blank" rel="noopener" class="button-link">Diagnóstico</a>
+          <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled">Open AR Experience</a>
+          <a href="./markers.html" target="_blank" rel="noopener" class="button-link">View Markers</a>
+          <a href="./test-marker.html" target="_blank" rel="noopener" class="button-link">Test Marker</a>
+          <a href="./diagnostico-contenido.html" target="_blank" rel="noopener" class="button-link">Diagnostics</a>
         </div>
       </div>
     </section>
@@ -158,15 +187,15 @@
 
 
     <section class="card">
-      <h2>Descargar Markers individualmente</h2>
-      <p>Aquí puede descargar cada Marker por separado. También puede descargar su archivo <strong>.patt</strong> si desea usarlo directamente.</p>
+      <h2>Download Marker Assets</h2>
+      <p>Download each Marker separately in <strong>PNG</strong> and <strong>PATT</strong> format for a professional workflow.</p>
       <div class="marker-card-grid">
         <div class="marker-card">
           <h3>Marker INTER SG</h3>
           <img src="./assets/inter-sg-marker.png" alt="Marker INTER SG"/>
           <div class="actions">
-            <a href="./assets/inter-sg-marker.png" download="inter-sg-marker.png" class="button-link">Descargar PNG</a>
-            <a href="./assets/inter-sg-marker.patt" download="inter-sg-marker.patt" class="button-link gold">Descargar PATT</a>
+            <a href="./assets/inter-sg-marker.png" download="inter-sg-marker.png" class="button-link">Download PNG</a>
+            <a href="./assets/inter-sg-marker.patt" download="inter-sg-marker.patt" class="button-link gold">Download PATT</a>
           </div>
         </div>
         <div class="marker-card">
@@ -174,31 +203,47 @@
           <p>Este marcador dice solamente <strong>INTER</strong>.</p>
           <img src="./assets/inter-marker-generic.png" alt="Marker INTER"/>
           <div class="actions">
-            <a href="./assets/inter-marker-generic.png" download="inter-marker-generic.png" class="button-link">Descargar PNG</a>
-            <a href="./assets/inter-marker-generic.patt" download="inter-marker-generic.patt" class="button-link gold">Descargar PATT</a>
+            <a href="./assets/inter-marker-generic.png" download="inter-marker-generic.png" class="button-link">Download PNG</a>
+            <a href="./assets/inter-marker-generic.patt" download="inter-marker-generic.patt" class="button-link gold">Download PATT</a>
           </div>
         </div>
         <div class="marker-card">
           <h3>Marker HIRO</h3>
           <img src="./assets/hiro-marker-generic.png" alt="Marker HIRO"/>
           <div class="actions">
-            <a href="./assets/hiro-marker-generic.png" download="hiro-marker-generic.png" class="button-link">Descargar PNG</a>
-            <a href="./assets/hiro-marker-generic.patt" download="hiro-marker-generic.patt" class="button-link gold">Descargar PATT</a>
+            <a href="./assets/hiro-marker-generic.png" download="hiro-marker-generic.png" class="button-link">Download PNG</a>
+            <a href="./assets/hiro-marker-generic.patt" download="hiro-marker-generic.patt" class="button-link gold">Download PATT</a>
           </div>
         </div>
       </div>
     </section>
 
     <section class="card">
-      <h2>Uso recomendado</h2>
+      <h2>Recommended Workflow</h2>
       <ol>
-        <li>Seleccione el <strong>Tipo de Marker</strong>.</li>
-        <li>Genere las dos imágenes.</li>
-        <li>Publique la versión integrada o separada en Blackboard.</li>
-        <li>El estudiante escanea el QR y apunta al mismo Marker seleccionado.</li>
+        <li>Seleccione el <strong>Marker Type</strong>.</li>
+        <li>Genere los assets visuales y revise la vista previa.</li>
+        <li>Publique la versión Integrated o Separated en su sitio, LMS o repositorio.</li>
+        <li>El usuario escanea el QR y apunta al mismo Marker seleccionado.</li>
       </ol>
-      <p class="important">Para otras unidades de la Inter, use <strong>Marker INTER</strong>. Para una opción totalmente genérica, use <strong>Marker HIRO</strong>.</p>
+      <p class="important">Para un look más comercial, use <strong>Marker INTER</strong>. Para un flujo completamente universal, use <strong>Marker HIRO</strong>.</p>
     </section>
+  
+
+    <section class="commercial-footer card">
+      <div>
+        <p class="footer-kicker">Commercial Concept</p>
+        <h2>Designed for modern institutions, creators and immersive projects</h2>
+        <p>Esta edición comercial presenta una interfaz más futurista, un flujo premium de generación y una experiencia visual preparada para venderse como plataforma moderna de Realidad Aumentada.</p>
+      </div>
+      <div class="footer-chips">
+        <span>Commercial UI</span>
+        <span>3D Future Mode</span>
+        <span>Premium Markers</span>
+        <span>GitHub Ready</span>
+      </div>
+    </section>
+
   </main>
 
   <div id="qrRenderHost" class="hidden-render" aria-hidden="true"></div>

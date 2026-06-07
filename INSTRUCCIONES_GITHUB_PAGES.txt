@@ -1,3 +1,5 @@
+FUTURE AR STUDIO – COMMERCIAL EDITION
+
 INSTRUCCIONES PARA SUBIR A GITHUB PAGES
 
 Si la página se ve sin diseño, con letras gigantes o las imágenes aparecen rotas, significa que GitHub no está encontrando las carpetas css, js o assets.
@@ -34,3 +36,6 @@ Abra directamente:
 https://TU-USUARIO.github.io/TU-REPOSITORIO/css/app.css
 
 Si sale 404, el CSS no está subido o no está en la carpeta correcta.
+
+
+Esta edición añade una interfaz comercial, visuales futuristas y un enfoque premium del producto.

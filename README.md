@@ -1,3 +1,5 @@
+FUTURE AR STUDIO – COMMERCIAL EDITION
+
 # Generador Realidad Aumentada – Markers corregidos
 
 Esta versión corrige el problema donde el Marker seleccionado no cambiaba correctamente.
@@ -37,3 +39,6 @@ Encabezado institucional actualizado: Universidad Interamericana de Puerto Rico 
 
 
 Actualización 3D: las imágenes ahora se muestran con un efecto visual más futurista, flotante y con apariencia 3D dentro de la experiencia de Realidad Aumentada.
+
+
+Esta edición añade una interfaz comercial, visuales futuristas y un enfoque premium del producto.
