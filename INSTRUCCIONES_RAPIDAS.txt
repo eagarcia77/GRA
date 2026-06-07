@@ -60,7 +60,8 @@ Full white-label update:
 
 
 
-HIRO label replacement fix:
-- The visible HIRO/HERO word on the marker is now covered and replaced with the custom Marker Text.
-- The underlying tracking core remains stable for AR detection.
-- Integrated and Separated exports now use the corrected custom marker preview.
+Final HIRO replacement fix:
+- The createCustomMarkerDataUrl function was fully replaced.
+- The HIRO word area is now fully covered with a white plate.
+- The custom Marker Text is drawn inside that plate.
+- This corrected custom marker is used by the marker preview, marker PNG download, Integrated Version and Separated Version.
