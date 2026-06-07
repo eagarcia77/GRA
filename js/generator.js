@@ -142,76 +142,48 @@ function drawStyleExtras(ctx, style){
 
 async function createCustomMarkerDataUrl(label, textColor, visualStyle){
   const cleanLabel = sanitizeMarkerLabel(label);
-  const style = visualStyle || 'neon';
-  const theme = getMarkerDesignTheme(style, textColor || '#0b1824');
   const baseImg = await loadImage('./assets/hiro-marker-generic.png');
   const canvas = document.createElement('canvas');
-  canvas.width = 900;
-  canvas.height = 900;
+  canvas.width = 620;
+  canvas.height = 620;
   const ctx = canvas.getContext('2d');
 
-  // Clean square marker card
-  const bg = ctx.createLinearGradient(0, 0, 900, 900);
-  bg.addColorStop(0, '#ffffff');
-  bg.addColorStop(1, style === 'minimal' ? '#f7fbfc' : '#fbfdfd');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0,0,900,900);
+  // Marker only: clean white background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  drawRoundRect(ctx, 44, 44, 812, 812, 34, '#ffffff', 'rgba(0,0,0,.08)');
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,.10)';
-  ctx.shadowBlur = 30;
-  ctx.shadowOffsetY = 10;
-  drawRoundRect(ctx, 70, 70, 760, 760, 28, '#ffffff', theme.frameStroke || 'rgba(143,190,222,.22)');
-  ctx.restore();
-
-  // Decorative clean AR corner marks
-  ctx.strokeStyle = theme.accentA;
-  ctx.lineWidth = 6;
-  const corners = [
-    [110,110,150,110,110,150],
-    [790,110,750,110,790,150],
-    [110,790,150,790,110,750],
-    [790,790,750,790,790,750]
-  ];
-  corners.forEach(c=>{ctx.beginPath(); ctx.moveTo(c[0],c[1]); ctx.lineTo(c[2],c[3]); ctx.moveTo(c[0],c[1]); ctx.lineTo(c[4],c[5]); ctx.stroke();});
-
-  // Draw the actual marker core larger and cleaner.
-  const markerX = 178, markerY = 150, markerSize = 544;
+  // Draw the original marker core centered and larger.
+  const markerX = 40;
+  const markerY = 40;
+  const markerSize = 540;
   ctx.drawImage(baseImg, markerX, markerY, markerSize, markerSize);
 
-  // Replace the visible HIRO word area with custom text.
-  const labelBoxX = markerX + 105;
-  const labelBoxY = markerY + 410;
-  const labelBoxW = 334;
-  const labelBoxH = 84;
+  // Replace the visible HIRO/HERO word area inside the marker.
+  const labelBoxX = markerX + 88;
+  const labelBoxY = markerY + 347;
+  const labelBoxW = 285;
+  const labelBoxH = 78;
 
-  // Cover old HIRO word completely.
+  // Cover the original word area.
   ctx.fillStyle = '#ffffff';
-  ctx.fillRect(labelBoxX - 18, labelBoxY - 14, labelBoxW + 36, labelBoxH + 28);
-  drawRoundRect(ctx, labelBoxX - 6, labelBoxY - 2, labelBoxW + 12, labelBoxH + 4, 14, '#ffffff', theme.chipStroke || '#d7e5e0');
+  ctx.fillRect(labelBoxX - 10, labelBoxY - 10, labelBoxW + 20, labelBoxH + 20);
+  ctx.strokeStyle = '#d8d8d8';
+  ctx.lineWidth = 2;
+  drawRoundRect(ctx, labelBoxX, labelBoxY, labelBoxW, labelBoxH, 10, '#ffffff', '#d8d8d8');
 
-  ctx.fillStyle = theme.textColor;
+  // Draw the custom user word.
+  ctx.fillStyle = textColor || '#0b1824';
   ctx.textAlign = 'center';
-  let markerFontSize = 42;
-  if(cleanLabel.length > 9) markerFontSize = 34;
-  if(cleanLabel.length > 14) markerFontSize = 28;
+  let markerFontSize = 38;
+  if(cleanLabel.length > 8) markerFontSize = 32;
+  if(cleanLabel.length > 12) markerFontSize = 26;
   ctx.font = `bold ${markerFontSize}px Arial`;
-  if(cleanLabel.includes(' ') || cleanLabel.length > 12){
-    wrapText(ctx, cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 28, labelBoxW - 20, markerFontSize + 6, 2);
-  } else {
-    ctx.fillText(cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 54);
-  }
 
-  // Small name badge at the bottom for visual polish only.
-  const badge = ctx.createLinearGradient(180, 742, 720, 742);
-  badge.addColorStop(0, theme.accentA);
-  badge.addColorStop(1, theme.accentB);
-  drawRoundRect(ctx, 180, 700, 540, 72, 24, badge, null);
-  ctx.fillStyle = style === 'gold' ? '#3a2600' : '#061018';
-  if(style === 'minimal') ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 34px Arial';
-  wrapText(ctx, cleanLabel, 450, 745, 500, 38, 1);
+  if(cleanLabel.includes(' ') || cleanLabel.length > 10){
+    wrapText(ctx, cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 24, labelBoxW - 16, markerFontSize + 4, 2);
+  } else {
+    ctx.fillText(cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 50);
+  }
 
   return canvas.toDataURL('image/png');
 }
@@ -229,8 +201,8 @@ async function refreshMarkerSelectionUI(){
   cfg.image = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.src = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.alt = `Custom Marker ${cfg.label}`;
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}. The HIRO word is replaced inside the marker. Style: ${getMarkerStyleLabel(cfg.visualStyle)}. Color: ${cfg.textColor.toUpperCase()}.`;
-  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label} · ${getMarkerStyleLabel(cfg.visualStyle)}`;
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Marker only mode: ${cfg.label}. The HIRO/HERO word is replaced inside the marker. Color: ${cfg.textColor.toUpperCase()}.`;
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label} · Marker only` ;
   if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
   if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
   if(downloadMarkerPngBtnSecondary){ downloadMarkerPngBtnSecondary.href = customDataUrl; downloadMarkerPngBtnSecondary.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
@@ -675,21 +647,13 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.font='28px Arial';
   ctx.fillText('Image · Video · YouTube · PDF · Link · 3D',800,340);
 
-  // Large QR area
   ctx.drawImage(qr,200,410,1200,1200);
 
-  // Only the clean marker in the middle of the QR code
-  const markerCardX = 585;
-  const markerCardY = 820;
-  const markerCardSize = 430;
-  drawRoundRect(ctx, markerCardX, markerCardY, markerCardSize, markerCardSize, 26, '#ffffff', '#d6d6d6');
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,.12)';
-  ctx.shadowBlur = 18;
-  ctx.shadowOffsetY = 8;
-  drawRoundRect(ctx, markerCardX, markerCardY, markerCardSize, markerCardSize, 26, '#ffffff', '#d6d6d6');
-  ctx.restore();
-  ctx.drawImage(marker, markerCardX+18, markerCardY+18, markerCardSize-36, markerCardSize-36);
+  // Only the marker in the middle of the QR code.
+  const markerSize = 330;
+  const markerX = 635;
+  const markerY = 845;
+  ctx.drawImage(marker, markerX, markerY, markerSize, markerSize);
 
   drawRoundRect(ctx,210,1650,1180,130,28,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
@@ -728,7 +692,6 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.font='bold 34px Arial';
   ctx.fillText(titleText || 'Experiencia AR',110,246);
 
-  // QR left
   drawRoundRect(ctx,100,320,700,700,30,'#ffffff','#d7e5e0');
   ctx.drawImage(qr,120,340,660,660);
   ctx.fillStyle = theme.text;
@@ -736,10 +699,8 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.font='bold 26px Arial';
   ctx.fillText('Paso 1: Escanea el QR Code',450,1068);
 
-  // Large clean marker right
   drawRoundRect(ctx,900,270,800,800,30,'#f9fbfa','#d7e5e0');
-  drawRoundRect(ctx,1008,378,584,584,28,'#ffffff','#d6d6d6');
-  ctx.drawImage(marker,1028,398,544,544);
+  ctx.drawImage(marker,990,360,620,620);
   ctx.fillStyle = theme.text;
   ctx.font='bold 26px Arial';
   ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1068);
@@ -752,7 +713,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   drawRoundRect(ctx,110,1280,1580,92,18,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,`El Marker muestra la palabra ${markerCfg.label} sustituyendo HIRO.`,900,1335,1320,28,2);
+  wrapText(ctx,`El Marker sustituye la palabra HIRO/HERO por ${markerCfg.label}.`,900,1335,1320,28,2);
 
   return canvas.toDataURL('image/png');
 }

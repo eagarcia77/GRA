@@ -80,3 +80,10 @@ Actualización de Marker e imágenes finales:
 - La palabra HIRO se sustituye visualmente dentro del Marker por el texto definido por el usuario.
 - La versión Integrated ahora muestra solamente el Marker en el centro del QR Code.
 - La versión Separated ahora usa un Marker más grande y limpio para mejorar la detección.
+
+
+Marker only update:
+- The marker preview is now only the marker itself, without extra visual cards.
+- The word HIRO/HERO is visually replaced inside the marker by the user text.
+- Integrated Version shows only the marker in the center of the QR code.
+- Separated Version shows a larger and cleaner standalone marker.
