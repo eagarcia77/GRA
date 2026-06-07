@@ -268,3 +268,15 @@ code{background:rgba(255,255,255,.07);color:#fff}
 .toggle-row input{width:auto;margin:0;accent-color:#2ae4af}
 .toggle-row span{color:#d8e8f3;font-weight:700}
 .brand-actions{margin-top:14px}
+
+/* Functional marker mode */
+.hidden-marker-controls{display:none !important}
+.functional-marker-notice{
+  margin:14px 0;
+  padding:16px 18px;
+  border-radius:18px;
+  background:rgba(255,216,107,.12);
+  border:1px solid rgba(255,216,107,.34);
+}
+.functional-marker-notice h3{margin:0 0 8px;color:#ffd86b}
+.functional-marker-notice p{margin:0;color:#d8e8f3;line-height:1.5}

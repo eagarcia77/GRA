@@ -141,58 +141,28 @@ function drawStyleExtras(ctx, style){
 }
 
 async function createCustomMarkerDataUrl(label, textColor, visualStyle){
-  const cleanLabel = sanitizeMarkerLabel(label);
+  // Functional marker mode:
+  // The visible PNG must match hiro-marker-generic.patt for AR.js detection.
   const baseImg = await loadImage('./assets/hiro-marker-generic.png');
   const canvas = document.createElement('canvas');
-  canvas.width = 620;
-  canvas.height = 620;
+  canvas.width = 900;
+  canvas.height = 900;
   const ctx = canvas.getContext('2d');
-
-  // Marker only: clean white background
   ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Draw the original marker core centered and larger.
-  const markerX = 40;
-  const markerY = 40;
-  const markerSize = 540;
-  ctx.drawImage(baseImg, markerX, markerY, markerSize, markerSize);
-
-  // Replace the visible HIRO/HERO word area inside the marker.
-  const labelBoxX = markerX + 88;
-  const labelBoxY = markerY + 347;
-  const labelBoxW = 285;
-  const labelBoxH = 78;
-
-  // Cover the original word area.
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(labelBoxX - 10, labelBoxY - 10, labelBoxW + 20, labelBoxH + 20);
-  ctx.strokeStyle = '#d8d8d8';
-  ctx.lineWidth = 2;
-  drawRoundRect(ctx, labelBoxX, labelBoxY, labelBoxW, labelBoxH, 10, '#ffffff', '#d8d8d8');
-
-  // Draw the custom user word.
-  ctx.fillStyle = textColor || '#0b1824';
-  ctx.textAlign = 'center';
-  let markerFontSize = 38;
-  if(cleanLabel.length > 8) markerFontSize = 32;
-  if(cleanLabel.length > 12) markerFontSize = 26;
-  ctx.font = `bold ${markerFontSize}px Arial`;
-
-  if(cleanLabel.includes(' ') || cleanLabel.length > 10){
-    wrapText(ctx, cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 24, labelBoxW - 16, markerFontSize + 4, 2);
-  } else {
-    ctx.fillText(cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 50);
-  }
-
+  ctx.fillRect(0,0,900,900);
+  ctx.drawImage(baseImg, 0, 0, 900, 900);
   return canvas.toDataURL('image/png');
 }
 
 function getMarkerConfig(){
-  const label = sanitizeMarkerLabel(markerTextInput ? markerTextInput.value : 'EAGR Learn');
-  const textColor = markerTextColorInput ? markerTextColorInput.value : '#0b1824';
-  const visualStyle = markerVisualStyleInput ? markerVisualStyleInput.value : 'neon';
-  return { mode:'custom', label, image:null, patt:'./assets/hiro-marker-generic.patt', textColor, visualStyle };
+  return {
+    mode:'hiro',
+    label:'HIRO',
+    image:null,
+    patt:'./assets/hiro-marker-generic.patt',
+    textColor:'#0b1824',
+    visualStyle:'functional'
+  };
 }
 
 async function refreshMarkerSelectionUI(){
@@ -200,12 +170,18 @@ async function refreshMarkerSelectionUI(){
   const customDataUrl = await createCustomMarkerDataUrl(cfg.label, cfg.textColor, cfg.visualStyle);
   cfg.image = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.src = customDataUrl;
-  if(selectedMarkerPreview) selectedMarkerPreview.alt = `Custom Marker ${cfg.label}`;
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Marker only mode: ${cfg.label}. The HIRO/HERO word is replaced inside the marker. Color: ${cfg.textColor.toUpperCase()}.`;
-  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label} · Marker only` ;
+  if(selectedMarkerPreview) selectedMarkerPreview.alt = 'Functional HIRO Marker';
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = 'Functional Marker Mode: se usa el marcador HIRO estándar porque coincide con el archivo PATT y garantiza detección AR.';
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = 'Ready: Functional HIRO Marker';
   if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
-  if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
-  if(downloadMarkerPngBtnSecondary){ downloadMarkerPngBtnSecondary.href = customDataUrl; downloadMarkerPngBtnSecondary.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
+  if(downloadMarkerPngBtn){
+    downloadMarkerPngBtn.href = customDataUrl;
+    downloadMarkerPngBtn.download = 'functional-hiro-marker.png';
+  }
+  if(downloadMarkerPngBtnSecondary){
+    downloadMarkerPngBtnSecondary.href = customDataUrl;
+    downloadMarkerPngBtnSecondary.download = 'functional-hiro-marker.png';
+  }
   return cfg;
 }
 
@@ -649,16 +625,16 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
 
   ctx.drawImage(qr,200,410,1200,1200);
 
-  // Only the marker in the middle of the QR code.
-  const markerSize = 330;
-  const markerX = 635;
-  const markerY = 845;
+  // Only functional HIRO marker in the center of the QR.
+  const markerSize = 350;
+  const markerX = 625;
+  const markerY = 835;
   ctx.drawImage(marker, markerX, markerY, markerSize, markerSize);
 
   drawRoundRect(ctx,210,1650,1180,130,28,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
-  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1710,1040,30,2);
+  wrapText(ctx,'Escanea el QR y luego apunta al Marker HIRO del centro.',800,1710,1040,30,2);
 
   ctx.fillStyle = theme.sub;
   ctx.font='18px Arial';
@@ -703,17 +679,17 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.drawImage(marker,990,360,620,620);
   ctx.fillStyle = theme.text;
   ctx.font='bold 26px Arial';
-  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1068);
+  ctx.fillText('Paso 2: Apunta al Marker HIRO',1300,1068);
 
   drawRoundRect(ctx,110,1130,1580,108,18,'#eef7f3',null);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,`Esta versión usa un QR simple y un Marker ${markerCfg.label} más grande y limpio para facilitar el escaneo y la detección.`,900,1172,1460,28,2);
+  wrapText(ctx,'Esta versión usa un QR simple y el Marker HIRO grande y limpio para facilitar el escaneo y la detección.',900,1172,1460,28,2);
 
   drawRoundRect(ctx,110,1280,1580,92,18,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,`El Marker sustituye la palabra HIRO/HERO por ${markerCfg.label}.`,900,1335,1320,28,2);
+  wrapText(ctx,'El Marker se dejó estándar para asegurar que funcione correctamente con la cámara.',900,1335,1320,28,2);
 
   return canvas.toDataURL('image/png');
 }

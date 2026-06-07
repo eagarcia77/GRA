@@ -79,3 +79,13 @@ Marker only update:
 - The word HIRO/HERO is visually replaced inside the marker by the user text.
 - Integrated Version shows only the marker in the center of the QR code.
 - Separated Version shows a larger and cleaner standalone marker.
+
+
+
+Functional Marker Mode update:
+- Removed/hidden marker customizations that were breaking tracking.
+- The program now uses the standard HIRO marker image because it matches hiro-marker-generic.patt.
+- This is required for AR.js marker detection to work reliably.
+- Integrated Version places the functional HIRO marker in the center of the QR.
+- Separated Version shows a larger functional HIRO marker.
+- To change the internal word HIRO and still make it work, the system needs a true PATT generator for the new marker image.
