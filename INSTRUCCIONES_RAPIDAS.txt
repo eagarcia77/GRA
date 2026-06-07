@@ -39,3 +39,11 @@ Advanced AR update:
 - Added webxr-viewer.html for surface placement compatible devices.
 - Marker AR remains as the universal fallback for images, video, PDF, YouTube and web links.
 - If WebXR is not supported, the 3D model still opens in an interactive viewer.
+
+
+Brand Settings update:
+- Added Brand Name and Brand Footer fields.
+- Added Primary Color and Secondary Color controls.
+- Added Upload Logo option with preview.
+- Uploaded logo is applied to exported integrated and separated assets.
+- Brand name, footer and colors are propagated to the generated AR links and viewer branding.

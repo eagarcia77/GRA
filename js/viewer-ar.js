@@ -5,6 +5,10 @@ const title = params.get('title') || params.get('n') || 'Contenido AR';
 const description = params.get('description') || params.get('x') || '';
 const markerMode = params.get('m') || 'custom';
 const customMarkerLabel = params.get('ml') || 'CUSTOM MARKER';
+const brandName = params.get('bn') || 'EAGR Learn';
+const brandPrimary = params.get('bp') || '#2ae4af';
+const brandSecondary = params.get('bs') || '#ffd86b';
+const brandFooter = params.get('bf') || 'Future AR Studio';
 
 const pageTitle = document.getElementById('pageTitle');
 const contentTitle = document.getElementById('contentTitle');
@@ -39,9 +43,9 @@ const activeMarker = hiroMarker;
   if(m && m !== activeMarker) m.setAttribute('visible', 'false');
 });
 
-pageTitle.textContent = title;
+pageTitle.textContent = title || brandName;
 contentTitle.textContent = title;
-contentDescription.textContent = description;
+contentDescription.textContent = description || brandFooter;
 openContentBtn.href = mediaUrl || '#';
 if(overlayMarkerLabel) overlayMarkerLabel.textContent = `Point to the marker: ${markerLabel}.`; 
 actionText.textContent = `Buscando Marker ${markerLabel}...`;
@@ -263,3 +267,5 @@ document.addEventListener('touchend', (event) => {
 setTimeout(() => {
   if(!markerDetected) showAction(`Si el Marker ${markerLabel} no se detecta, usa Mostrar contenido sin marcador.`);
 }, 8000);
+
+(function applyBrandTheme(){ document.documentElement.style.setProperty('--brand-primary', brandPrimary); document.documentElement.style.setProperty('--brand-secondary', brandSecondary); })();

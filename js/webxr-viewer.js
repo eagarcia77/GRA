@@ -3,6 +3,10 @@ const mediaUrl = params.get('u') || params.get('data') || '';
 const type = params.get('t') || params.get('type') || 'model';
 const title = params.get('n') || params.get('title') || 'EAGR Learn AR';
 const description = params.get('x') || params.get('description') || 'Markerless AR viewer for GLB/GLTF 3D models.';
+const brandName = params.get('bn') || 'EAGR Learn';
+const brandPrimary = params.get('bp') || '#2ae4af';
+const brandSecondary = params.get('bs') || '#ffd86b';
+const brandFooter = params.get('bf') || 'Future AR Studio';
 
 const titleEl = document.getElementById('title');
 const descriptionEl = document.getElementById('description');
@@ -11,7 +15,7 @@ const openModel = document.getElementById('openModel');
 const errorBox = document.getElementById('errorBox');
 
 titleEl.textContent = title;
-descriptionEl.textContent = description;
+descriptionEl.textContent = description || brandFooter;
 
 function showError(message){
   errorBox.style.display = 'block';
@@ -44,3 +48,6 @@ if(navigator.xr && typeof navigator.xr.isSessionSupported === 'function'){
 } else {
   showError('WebXR is not available in this browser. The 3D viewer fallback is still available.');
 }
+
+document.documentElement.style.setProperty('--green', brandPrimary);
+document.documentElement.style.setProperty('--gold', brandSecondary);

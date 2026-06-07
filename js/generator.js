@@ -1,6 +1,12 @@
 const $ = id => document.getElementById(id);
 const contentTypeInput = $('contentType');
 const advancedArModeInput = $('advancedArMode');
+const brandNameInput = $('brandName');
+const brandFooterInput = $('brandFooter');
+const brandPrimaryInput = $('brandPrimary');
+const brandSecondaryInput = $('brandSecondary');
+const brandLogoUploadInput = $('brandLogoUpload');
+const brandLogoPreview = $('brandLogoPreview');
 const markerTextInput = $('markerText');
 const markerTextColorInput = $('markerTextColor');
 const markerVisualStyleInput = $('markerVisualStyle');
@@ -33,6 +39,7 @@ const selectedMarkerStatus = $('selectedMarkerStatus');
 const downloadMarkerPngBtn = $('downloadMarkerPngBtn');
 const downloadMarkerPngBtnSecondary = $('downloadMarkerPngBtnSecondary');
 const downloadMarkerPreview = $('downloadMarkerPreview');
+let currentBrandLogoDataUrl = './assets/eagr-learn-logo.svg';
 
 function setStatus(message, type='ok'){
   statusBox.textContent = message;
@@ -155,7 +162,7 @@ async function createCustomMarkerDataUrl(label, textColor, visualStyle){
   ctx.fillStyle = style === 'minimal' ? '#ffffff' : '#04101a';
   ctx.textAlign = 'center';
   ctx.font = 'bold 32px Arial';
-  ctx.fillText('EAGR LEARN', 315, 147);
+  ctx.fillText(sanitizeBrandName(brandNameInput ? brandNameInput.value : 'EAGR Learn').toUpperCase().slice(0,18), 315, 147);
 
   drawRoundRect(ctx, 710, 104, 240, 66, 20, style === 'minimal' ? '#0b1824' : 'rgba(255,255,255,.05)', theme.chipStroke);
   ctx.fillStyle = style === 'minimal' ? '#ffffff' : theme.accentC;
@@ -300,6 +307,7 @@ function buildArUrl(){
   const mode = getAdvancedArMode(type);
   const finalUrl = type === 'youtube' ? getYoutubeWatchUrl(url) : url;
   const markerCfg = getMarkerConfig();
+  const brand = getBrandConfig();
   const params = new URLSearchParams();
   params.set('t', type);
   params.set('u', finalUrl);
@@ -308,6 +316,10 @@ function buildArUrl(){
   params.set('ml', markerCfg.label);
   if(title) params.set('n', title);
   if(description) params.set('x', description);
+  params.set('bn', brand.name);
+  params.set('bp', brand.primary);
+  params.set('bs', brand.secondary);
+  params.set('bf', brand.footer);
   return `${base}${buildViewerPath(type, mode)}?${params.toString()}`;
 }
 
@@ -469,12 +481,54 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
   lines.slice(0,maxLines).forEach((ln,i)=>ctx.fillText(ln,x,y+(i*lineHeight)));
 }
 
-function getTheme(style){
-  if(style==='inter') return {accent:'#2ae4af', accent2:'#ffd86b', text:'#0b1824', sub:'#44605a', bg:'#ffffff', chip:'#eef7f3', stripe:'#2ae4af'};
-  if(style==='tiger') return {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#fff6d8', stripe:'#1e1e1e'};
+
+function sanitizeBrandName(raw){
+  return (raw || 'EAGR Learn').trim().slice(0,40) || 'EAGR Learn';
+}
+
+function sanitizeFooter(raw){
+  return (raw || 'Future AR Studio').trim().slice(0,80) || 'Future AR Studio';
+}
+
+function getBrandConfig(){
+  return {
+    name: sanitizeBrandName(brandNameInput ? brandNameInput.value : 'EAGR Learn'),
+    footer: sanitizeFooter(brandFooterInput ? brandFooterInput.value : 'Future AR Studio'),
+    primary: brandPrimaryInput ? brandPrimaryInput.value : '#2ae4af',
+    secondary: brandSecondaryInput ? brandSecondaryInput.value : '#ffd86b',
+    logo: currentBrandLogoDataUrl || './assets/eagr-learn-logo.svg'
+  };
+}
+
+async function fileToDataUrl(file){
+  return await new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function refreshBrandPreview(){
+  const brand = getBrandConfig();
+  if(brandLogoPreview) brandLogoPreview.src = brand.logo;
+  return brand;
+}
+
+async function loadOptionalBrandLogo(src){
+  if(!src) return null;
+  try { return await loadImage(src); } catch(e){ console.warn('Brand logo load failed', e); return null; }
+}
+
+function getTheme(style, brand){
+  const primary = (brand && brand.primary) || '#2ae4af';
+  const secondary = (brand && brand.secondary) || '#ffd86b';
+  const darkText = '#14211d';
+  if(style==='inter') return {accent:primary, accent2:secondary, text:'#0b1824', sub:'#44605a', bg:'#ffffff', chip:'#eef7f3', stripe:primary};
+  if(style==='tiger') return {accent:primary, accent2:secondary, text:darkText, sub:'#5d716b', bg:'#ffffff', chip:'#fff6d8', stripe:'#1e1e1e'};
   return style==='modern'
-    ? {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#eef7f3', stripe:'#1e1e1e'}
-    : {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#f4f4f4', stripe:'#1e1e1e'};
+    ? {accent:primary, accent2:secondary, text:darkText, sub:'#5d716b', bg:'#ffffff', chip:'#eef7f3', stripe:'#1e1e1e'}
+    : {accent:primary, accent2:secondary, text:darkText, sub:'#5d716b', bg:'#ffffff', chip:'#f4f4f4', stripe:'#1e1e1e'};
 }
 
 function drawPremiumRibbon(ctx, x, y, w, h, theme, text='BRAND'){
@@ -528,10 +582,11 @@ function drawTigerBanner(ctx, x, y, w, h, theme){
   ctx.fillText('TIGER TECH STYLE', x + w/2, y + h/2 + 8);
 }
 
-async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentType,style,markerCfg){
+async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentType,style,markerCfg,brandCfg){
   const qr = await loadImage(qrDataUrl);
   const marker = await loadImage(markerCfg.image);
-  const theme = getTheme(style);
+  const theme = getTheme(style, brandCfg);
+  const brandLogo = await loadOptionalBrandLogo(brandCfg.logo);
   const canvas = document.createElement('canvas');
   canvas.width=1600;
   canvas.height=1940;
@@ -542,19 +597,24 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   drawRoundRect(ctx,60,60,1480,1820,44,'#ffffff',theme.accent);
   if(style==='inter') drawPremiumHeaderBars(ctx, 110, 94, 1380, theme);
 
+  if(brandLogo){ ctx.drawImage(brandLogo, 128, 98, 180, 86); }
   ctx.fillStyle = theme.accent;
-  ctx.font='bold 58px Arial';
+  ctx.font='bold 52px Arial';
   ctx.textAlign='center';
-  ctx.fillText('AR',800,170);
+  ctx.fillText(brandCfg.name.toUpperCase().slice(0,24),800,170);
   if(style==='inter') drawPremiumRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.label);
+
+  ctx.fillStyle = theme.sub;
+  ctx.font='bold 20px Arial';
+  ctx.fillText(brandCfg.footer,800,250);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 40px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',800,285);
+  ctx.fillText(titleText || 'Experiencia AR',800,295);
 
   ctx.fillStyle = theme.sub;
   ctx.font='28px Arial';
-  ctx.fillText('Image · Video · YouTube · PDF · Link',800,335);
+  ctx.fillText('Image · Video · YouTube · PDF · Link · 3D',800,342);
 
   drawRoundRect(ctx,170,380,1260,1270,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
   ctx.drawImage(qr,200,410,1200,1200);
@@ -579,13 +639,18 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
   wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1705,1040,30,3);
+
+  ctx.fillStyle = theme.sub;
+  ctx.font='18px Arial';
+  ctx.fillText(`${brandCfg.name} · ${brandCfg.footer}`,800,1830);
   return canvas.toDataURL('image/png');
 }
 
-async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentType,style,markerCfg){
+async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentType,style,markerCfg,brandCfg){
   const qr = await loadImage(qrDataUrl);
   const marker = await loadImage(markerCfg.image);
-  const theme = getTheme(style);
+  const theme = getTheme(style, brandCfg);
+  const brandLogo = await loadOptionalBrandLogo(brandCfg.logo);
   const canvas = document.createElement('canvas');
   canvas.width=1800;
   canvas.height=1450;
@@ -596,12 +661,17 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   drawRoundRect(ctx,60,60,1680,1330,40,'#ffffff',theme.accent);
   if(style==='inter') drawPremiumHeaderBars(ctx, 95, 92, 1610, theme);
 
+  if(brandLogo){ ctx.drawImage(brandLogo, 110, 96, 165, 74); }
   ctx.fillStyle = theme.accent;
-  ctx.font='bold 54px Arial';
+  ctx.font='bold 42px Arial';
   ctx.textAlign='left';
-  ctx.fillText('AR',110,170);
+  ctx.fillText(brandCfg.name.toUpperCase().slice(0,20),300,160);
 
   if(style==='inter') drawPremiumRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.label);
+
+  ctx.fillStyle = theme.sub;
+  ctx.font='bold 18px Arial';
+  ctx.fillText(brandCfg.footer,300,194);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 34px Arial';
@@ -625,7 +695,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.font='bold 26px Arial';
   ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1076);
 
-  drawRoundRect(ctx,105,1112,1590,95,18,style==='inter' ? '#eef7f3' : '#eef7f3',null);
+  drawRoundRect(ctx,105,1112,1590,95,18,'#eef7f3',null);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
   wrapText(ctx,`Esta versión usa QR simple y Marker ${markerCfg.label} grande para facilitar el escaneo y la detección.`,900,1148,1480,28,2);
@@ -642,6 +712,10 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.font='bold 22px Arial';
   ctx.textAlign='center';
   wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',900,1358,1320,28,2);
+
+  ctx.fillStyle = theme.sub;
+  ctx.font='16px Arial';
+  ctx.fillText(`${brandCfg.name} · ${brandCfg.footer}`,900,1298);
   return canvas.toDataURL('image/png');
 }
 
@@ -652,6 +726,7 @@ async function generate(){
   const type = detectType(contentUrlInput.value.trim());
   const style = qrStyleInput.value;
   const markerCfg = await refreshMarkerSelectionUI();
+  const brandCfg = await refreshBrandPreview();
   const arMode = getAdvancedArMode(type);
 
   resultUrl.value = arUrl;
@@ -663,8 +738,8 @@ async function generate(){
     const integratedQr = await createQrDataUrl(arUrl, style, false);
     const separatedQr = await createQrDataUrl(arUrl, style === 'inter' ? 'inter' : 'classic', true);
 
-    const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg);
-    const separated = await buildSeparatedImage(separatedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg);
+    const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg,brandCfg);
+    const separated = await buildSeparatedImage(separatedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg,brandCfg);
 
     integratedPreview.innerHTML = `<img src="${integrated}" alt="Versión integrada">`;
     separatedPreview.innerHTML = `<img src="${separated}" alt="Versión separada">`;
@@ -689,7 +764,26 @@ async function generate(){
 
 baseUrlInput.value = currentBaseUrl();
 if(markerTextInput){
-  markerTextInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); });
+  markerTextInput.addEventListener('input', () => { if(brandNameInput) brandNameInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); refreshBrandPreview().catch(console.error); });
+if(brandFooterInput) brandFooterInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); });
+if(brandPrimaryInput) brandPrimaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
+if(brandSecondaryInput) brandSecondaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
+if(brandLogoUploadInput){
+  brandLogoUploadInput.addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    try{
+      currentBrandLogoDataUrl = await fileToDataUrl(file);
+      await refreshBrandPreview();
+      setStatus('Logo cargado correctamente.', 'ok');
+    }catch(err){
+      console.error(err);
+      setStatus('No se pudo cargar el logo.', 'error');
+    }
+  });
+}
+refreshBrandPreview().catch(console.error);
+refreshMarkerSelectionUI().catch(console.error); });
   markerTextInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
 }
 if(markerTextColorInput){

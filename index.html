@@ -75,6 +75,38 @@
         </select>
         <small><strong>WebXR Surface Mode</strong> es para modelos 3D en formato GLB/GLTF. Permite una experiencia markerless compatible con colocación en superficie en dispositivos soportados.</small>
 
+        <div class="brand-settings-card">
+          <h3>Brand Settings</h3>
+          <p class="brand-settings-note">Personalice la experiencia con su marca. El logo subido se aplicará a las imágenes exportadas y a la vista del generador.</p>
+          <div class="brand-settings-grid">
+            <div>
+              <label for="brandName">Brand Name</label>
+              <input id="brandName" type="text" maxlength="40" placeholder="Your brand name" value="EAGR Learn"/>
+            </div>
+            <div>
+              <label for="brandFooter">Brand Footer</label>
+              <input id="brandFooter" type="text" maxlength="80" placeholder="Custom footer text" value="Future AR Studio"/>
+            </div>
+            <div>
+              <label for="brandPrimary">Primary Color</label>
+              <input id="brandPrimary" type="color" value="#2ae4af" class="color-input"/>
+            </div>
+            <div>
+              <label for="brandSecondary">Secondary Color</label>
+              <input id="brandSecondary" type="color" value="#ffd86b" class="color-input"/>
+            </div>
+            <div class="brand-upload-col">
+              <label for="brandLogoUpload">Upload Logo</label>
+              <input id="brandLogoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"/>
+              <small>Use PNG, JPG, WEBP or SVG. The uploaded logo is used in exported visual assets.</small>
+            </div>
+            <div class="brand-logo-preview-box">
+              <span class="brand-preview-label">Logo Preview</span>
+              <img id="brandLogoPreview" src="./assets/eagr-learn-logo.svg" alt="Brand logo preview"/>
+            </div>
+          </div>
+        </div>
+
         <label for="markerText">Marker Text</label>
         <input id="markerText" type="text" maxlength="20" placeholder="Write any text, for example: BRAND, LAB, TOUR, EVENT..." value="EAGR Learn"/>
         <small>Escriba el texto que desee. El sistema lo colocará automáticamente en el Marker para una experiencia más simple y personalizada.</small>
