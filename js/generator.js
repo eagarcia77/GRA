@@ -171,8 +171,8 @@ async function refreshMarkerSelectionUI(){
   cfg.image = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.src = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.alt = 'Functional HIRO Marker';
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = 'Functional Marker Mode: se usa el marcador HIRO estándar porque coincide con el archivo PATT y garantiza detección AR.';
-  if(selectedMarkerStatus) selectedMarkerStatus.textContent = 'Ready: Functional HIRO Marker';
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = 'Functional Marker Mode: the standard HIRO marker is used because it matches the PATT file. / Modo funcional: se usa el marcador HIRO estándar porque coincide con el archivo PATT.';
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = 'Ready: Functional HIRO Marker / Listo: Marker HIRO funcional';
   if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
   if(downloadMarkerPngBtn){
     downloadMarkerPngBtn.href = customDataUrl;
@@ -634,7 +634,7 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   drawRoundRect(ctx,210,1650,1180,130,28,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
-  wrapText(ctx,'Escanea el QR y luego apunta al Marker HIRO del centro.',800,1710,1040,30,2);
+  wrapText(ctx,'Scan the QR and point to the HIRO Marker in the center. / Escanea el QR y apunta al Marker HIRO del centro.',800,1710,1040,30,2);
 
   ctx.fillStyle = theme.sub;
   ctx.font='18px Arial';
@@ -673,23 +673,23 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.fillStyle = theme.text;
   ctx.textAlign='center';
   ctx.font='bold 26px Arial';
-  ctx.fillText('Paso 1: Escanea el QR Code',450,1068);
+  ctx.fillText('Step 1: Scan the QR Code / Paso 1: Escanea el QR Code',450,1068);
 
   drawRoundRect(ctx,900,270,800,800,30,'#f9fbfa','#d7e5e0');
   ctx.drawImage(marker,990,360,620,620);
   ctx.fillStyle = theme.text;
   ctx.font='bold 26px Arial';
-  ctx.fillText('Paso 2: Apunta al Marker HIRO',1300,1068);
+  ctx.fillText('Step 2: Point to the HIRO Marker / Paso 2: Apunta al Marker HIRO',1300,1068);
 
   drawRoundRect(ctx,110,1130,1580,108,18,'#eef7f3',null);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,'Esta versión usa un QR simple y el Marker HIRO grande y limpio para facilitar el escaneo y la detección.',900,1172,1460,28,2);
+  wrapText(ctx,'This version uses a simple QR and a larger clean HIRO Marker. / Esta versión usa un QR simple y un Marker HIRO más grande y limpio.',900,1172,1460,28,2);
 
   drawRoundRect(ctx,110,1280,1580,92,18,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,'El Marker se dejó estándar para asegurar que funcione correctamente con la cámara.',900,1335,1320,28,2);
+  wrapText(ctx,'The standard Marker is used to ensure camera detection. / Se usa el marcador estándar para asegurar la detección con la cámara.',900,1335,1320,28,2);
 
   return canvas.toDataURL('image/png');
 }

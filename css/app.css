@@ -280,3 +280,17 @@ code{background:rgba(255,255,255,.07);color:#fff}
 }
 .functional-marker-notice h3{margin:0 0 8px;color:#ffd86b}
 .functional-marker-notice p{margin:0;color:#d8e8f3;line-height:1.5}
+
+/* Bilingual functional simplified edition */
+.logo-small{max-width:130px !important;width:130px !important;height:auto !important;padding:0 !important}
+.hidden-marker-controls{display:none !important}
+.functional-simplified-note{
+  margin:14px 0;
+  padding:16px 18px;
+  border-radius:18px;
+  background:rgba(42,228,175,.10);
+  border:1px solid rgba(42,228,175,.26);
+}
+.functional-simplified-note h3{margin:0 0 8px;color:#7ef1ca}
+.functional-simplified-note p{margin:0;color:#d8e8f3;line-height:1.55}
+.functional-marker-notice h3{color:#ffd86b}
