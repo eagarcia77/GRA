@@ -55,3 +55,13 @@ Brand Settings update:
 - Added Upload Logo option with preview.
 - Uploaded logo is applied to exported integrated and separated assets.
 - Brand name, footer and colors are propagated to the generated AR links and viewer branding.
+
+
+
+Full white-label update:
+- Added automatic saving with localStorage.
+- Added Logo URL option in addition to Upload Logo.
+- Added Product Name.
+- Added White-label mode.
+- Added Save Brand Settings, Reset Brand and Apply Brand Preview.
+- Generated links now carry brand name, product name, colors, footer and logo URL when provided.

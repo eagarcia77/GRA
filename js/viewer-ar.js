@@ -8,7 +8,10 @@ const customMarkerLabel = params.get('ml') || 'CUSTOM MARKER';
 const brandName = params.get('bn') || 'EAGR Learn';
 const brandPrimary = params.get('bp') || '#2ae4af';
 const brandSecondary = params.get('bs') || '#ffd86b';
-const brandFooter = params.get('bf') || 'Future AR Studio';
+const brandFooter = params.get('bf') || 'Commercial AR Experience Builder';
+const brandProductName = params.get('pn') || 'Future AR Studio';
+const brandLogoUrl = params.get('bl') || '';
+const whiteLabelMode = params.get('wl') === '1';
 
 const pageTitle = document.getElementById('pageTitle');
 const contentTitle = document.getElementById('contentTitle');

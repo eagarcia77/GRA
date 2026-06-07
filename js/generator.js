@@ -3,10 +3,20 @@ const contentTypeInput = $('contentType');
 const advancedArModeInput = $('advancedArMode');
 const brandNameInput = $('brandName');
 const brandFooterInput = $('brandFooter');
+const brandProductNameInput = $('brandProductName');
 const brandPrimaryInput = $('brandPrimary');
 const brandSecondaryInput = $('brandSecondary');
+const brandLogoUrlInput = $('brandLogoUrl');
 const brandLogoUploadInput = $('brandLogoUpload');
 const brandLogoPreview = $('brandLogoPreview');
+const whiteLabelModeInput = $('whiteLabelMode');
+const autoSaveBrandInput = $('autoSaveBrand');
+const saveBrandBtn = $('saveBrandBtn');
+const resetBrandBtn = $('resetBrandBtn');
+const applyBrandBtn = $('applyBrandBtn');
+const heroBrandLogo = $('heroBrandLogo');
+const heroBrandTitle = $('heroBrandTitle');
+const productSubtitle = $('productSubtitle');
 const markerTextInput = $('markerText');
 const markerTextColorInput = $('markerTextColor');
 const markerVisualStyleInput = $('markerVisualStyle');
@@ -40,6 +50,17 @@ const downloadMarkerPngBtn = $('downloadMarkerPngBtn');
 const downloadMarkerPngBtnSecondary = $('downloadMarkerPngBtnSecondary');
 const downloadMarkerPreview = $('downloadMarkerPreview');
 let currentBrandLogoDataUrl = './assets/eagr-learn-logo.svg';
+const DEFAULT_BRAND_SETTINGS = {
+  name: 'EAGR Learn',
+  productName: 'Future AR Studio',
+  footer: 'Commercial AR Experience Builder',
+  primary: '#2ae4af',
+  secondary: '#ffd86b',
+  logoUrl: '',
+  logoDataUrl: './assets/eagr-learn-logo.svg',
+  whiteLabel: false,
+  autoSave: true
+};
 
 function setStatus(message, type='ok'){
   statusBox.textContent = message;
@@ -320,6 +341,9 @@ function buildArUrl(){
   params.set('bp', brand.primary);
   params.set('bs', brand.secondary);
   params.set('bf', brand.footer);
+  params.set('pn', brand.productName);
+  params.set('wl', brand.whiteLabel ? '1' : '0');
+  if(brand.logoUrl) params.set('bl', brand.logoUrl);
   return `${base}${buildViewerPath(type, mode)}?${params.toString()}`;
 }
 
@@ -487,16 +511,31 @@ function sanitizeBrandName(raw){
 }
 
 function sanitizeFooter(raw){
-  return (raw || 'Future AR Studio').trim().slice(0,80) || 'Future AR Studio';
+  return (raw || 'Commercial AR Experience Builder').trim().slice(0,80) || 'Commercial AR Experience Builder';
+}
+
+function sanitizeProductName(raw){
+  return (raw || 'Future AR Studio').trim().slice(0,50) || 'Future AR Studio';
+}
+
+function getLogoSource(){
+  if(currentBrandLogoDataUrl && currentBrandLogoDataUrl !== DEFAULT_BRAND_SETTINGS.logoDataUrl) return currentBrandLogoDataUrl;
+  const url = brandLogoUrlInput ? brandLogoUrlInput.value.trim() : '';
+  if(url) return url;
+  return currentBrandLogoDataUrl || DEFAULT_BRAND_SETTINGS.logoDataUrl;
 }
 
 function getBrandConfig(){
   return {
-    name: sanitizeBrandName(brandNameInput ? brandNameInput.value : 'EAGR Learn'),
-    footer: sanitizeFooter(brandFooterInput ? brandFooterInput.value : 'Future AR Studio'),
-    primary: brandPrimaryInput ? brandPrimaryInput.value : '#2ae4af',
-    secondary: brandSecondaryInput ? brandSecondaryInput.value : '#ffd86b',
-    logo: currentBrandLogoDataUrl || './assets/eagr-learn-logo.svg'
+    name: sanitizeBrandName(brandNameInput ? brandNameInput.value : DEFAULT_BRAND_SETTINGS.name),
+    productName: sanitizeProductName(brandProductNameInput ? brandProductNameInput.value : DEFAULT_BRAND_SETTINGS.productName),
+    footer: sanitizeFooter(brandFooterInput ? brandFooterInput.value : DEFAULT_BRAND_SETTINGS.footer),
+    primary: brandPrimaryInput ? brandPrimaryInput.value : DEFAULT_BRAND_SETTINGS.primary,
+    secondary: brandSecondaryInput ? brandSecondaryInput.value : DEFAULT_BRAND_SETTINGS.secondary,
+    logoUrl: brandLogoUrlInput ? brandLogoUrlInput.value.trim() : '',
+    logo: getLogoSource(),
+    whiteLabel: whiteLabelModeInput ? !!whiteLabelModeInput.checked : false,
+    autoSave: autoSaveBrandInput ? !!autoSaveBrandInput.checked : true
   };
 }
 
@@ -512,7 +551,66 @@ async function fileToDataUrl(file){
 async function refreshBrandPreview(){
   const brand = getBrandConfig();
   if(brandLogoPreview) brandLogoPreview.src = brand.logo;
+  if(heroBrandLogo) heroBrandLogo.src = brand.logo;
+  if(heroBrandTitle) heroBrandTitle.textContent = brand.whiteLabel ? brand.name : brand.name;
+  if(productSubtitle) productSubtitle.innerHTML = `<strong>${brand.productName}</strong>`;
+  document.documentElement.style.setProperty('--brand-primary', brand.primary);
+  document.documentElement.style.setProperty('--brand-secondary', brand.secondary);
+  if(brand.autoSave) saveBrandSettings(false);
   return brand;
+}
+
+function saveBrandSettings(showMessage=true){
+  const brand = getBrandConfig();
+  try{
+    localStorage.setItem('eagrBrandSettings', JSON.stringify({
+      name: brand.name,
+      productName: brand.productName,
+      footer: brand.footer,
+      primary: brand.primary,
+      secondary: brand.secondary,
+      logoUrl: brand.logoUrl,
+      logoDataUrl: currentBrandLogoDataUrl,
+      whiteLabel: brand.whiteLabel,
+      autoSave: brand.autoSave
+    }));
+    if(showMessage) setStatus('Brand Settings guardados correctamente.', 'ok');
+  }catch(err){
+    console.warn('Could not save brand settings', err);
+    if(showMessage) setStatus('No se pudieron guardar los Brand Settings en este navegador.', 'warn');
+  }
+}
+
+function loadBrandSettings(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('eagrBrandSettings') || 'null');
+    if(!saved) return;
+    if(brandNameInput) brandNameInput.value = saved.name || DEFAULT_BRAND_SETTINGS.name;
+    if(brandProductNameInput) brandProductNameInput.value = saved.productName || DEFAULT_BRAND_SETTINGS.productName;
+    if(brandFooterInput) brandFooterInput.value = saved.footer || DEFAULT_BRAND_SETTINGS.footer;
+    if(brandPrimaryInput) brandPrimaryInput.value = saved.primary || DEFAULT_BRAND_SETTINGS.primary;
+    if(brandSecondaryInput) brandSecondaryInput.value = saved.secondary || DEFAULT_BRAND_SETTINGS.secondary;
+    if(brandLogoUrlInput) brandLogoUrlInput.value = saved.logoUrl || '';
+    currentBrandLogoDataUrl = saved.logoDataUrl || DEFAULT_BRAND_SETTINGS.logoDataUrl;
+    if(whiteLabelModeInput) whiteLabelModeInput.checked = !!saved.whiteLabel;
+    if(autoSaveBrandInput) autoSaveBrandInput.checked = saved.autoSave !== false;
+  }catch(err){ console.warn('Could not load brand settings', err); }
+}
+
+function resetBrandSettings(){
+  if(brandNameInput) brandNameInput.value = DEFAULT_BRAND_SETTINGS.name;
+  if(brandProductNameInput) brandProductNameInput.value = DEFAULT_BRAND_SETTINGS.productName;
+  if(brandFooterInput) brandFooterInput.value = DEFAULT_BRAND_SETTINGS.footer;
+  if(brandPrimaryInput) brandPrimaryInput.value = DEFAULT_BRAND_SETTINGS.primary;
+  if(brandSecondaryInput) brandSecondaryInput.value = DEFAULT_BRAND_SETTINGS.secondary;
+  if(brandLogoUrlInput) brandLogoUrlInput.value = DEFAULT_BRAND_SETTINGS.logoUrl;
+  currentBrandLogoDataUrl = DEFAULT_BRAND_SETTINGS.logoDataUrl;
+  if(whiteLabelModeInput) whiteLabelModeInput.checked = DEFAULT_BRAND_SETTINGS.whiteLabel;
+  if(autoSaveBrandInput) autoSaveBrandInput.checked = DEFAULT_BRAND_SETTINGS.autoSave;
+  localStorage.removeItem('eagrBrandSettings');
+  refreshBrandPreview().catch(console.error);
+  refreshMarkerSelectionUI().catch(console.error);
+  setStatus('Brand Settings restaurados.', 'ok');
 }
 
 async function loadOptionalBrandLogo(src){
@@ -606,7 +704,7 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
 
   ctx.fillStyle = theme.sub;
   ctx.font='bold 20px Arial';
-  ctx.fillText(brandCfg.footer,800,250);
+  ctx.fillText(brandCfg.productName || brandCfg.footer,800,250);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 40px Arial';
@@ -642,7 +740,7 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
 
   ctx.fillStyle = theme.sub;
   ctx.font='18px Arial';
-  ctx.fillText(`${brandCfg.name} · ${brandCfg.footer}`,800,1830);
+  ctx.fillText(brandCfg.whiteLabel ? `${brandCfg.name} · ${brandCfg.footer}` : `${brandCfg.name} · ${brandCfg.productName}`,800,1830);
   return canvas.toDataURL('image/png');
 }
 
@@ -671,7 +769,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
 
   ctx.fillStyle = theme.sub;
   ctx.font='bold 18px Arial';
-  ctx.fillText(brandCfg.footer,300,194);
+  ctx.fillText(brandCfg.productName || brandCfg.footer,300,194);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 34px Arial';
@@ -715,7 +813,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
 
   ctx.fillStyle = theme.sub;
   ctx.font='16px Arial';
-  ctx.fillText(`${brandCfg.name} · ${brandCfg.footer}`,900,1298);
+  ctx.fillText(brandCfg.whiteLabel ? `${brandCfg.name} · ${brandCfg.footer}` : `${brandCfg.name} · ${brandCfg.productName}`,900,1298);
   return canvas.toDataURL('image/png');
 }
 
@@ -765,9 +863,16 @@ async function generate(){
 baseUrlInput.value = currentBaseUrl();
 if(markerTextInput){
   markerTextInput.addEventListener('input', () => { if(brandNameInput) brandNameInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); refreshBrandPreview().catch(console.error); });
+if(brandProductNameInput) brandProductNameInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); });
 if(brandFooterInput) brandFooterInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); });
 if(brandPrimaryInput) brandPrimaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
 if(brandSecondaryInput) brandSecondaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
+if(brandLogoUrlInput) brandLogoUrlInput.addEventListener('input', () => { currentBrandLogoDataUrl = DEFAULT_BRAND_SETTINGS.logoDataUrl; refreshBrandPreview().catch(console.error); });
+if(whiteLabelModeInput) whiteLabelModeInput.addEventListener('change', () => { refreshBrandPreview().catch(console.error); });
+if(autoSaveBrandInput) autoSaveBrandInput.addEventListener('change', () => { refreshBrandPreview().catch(console.error); });
+if(saveBrandBtn) saveBrandBtn.addEventListener('click', () => saveBrandSettings(true));
+if(resetBrandBtn) resetBrandBtn.addEventListener('click', resetBrandSettings);
+if(applyBrandBtn) applyBrandBtn.addEventListener('click', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); setStatus('Brand Preview aplicado.', 'ok'); });
 if(brandLogoUploadInput){
   brandLogoUploadInput.addEventListener('change', async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -782,6 +887,7 @@ if(brandLogoUploadInput){
     }
   });
 }
+loadBrandSettings();
 refreshBrandPreview().catch(console.error);
 refreshMarkerSelectionUI().catch(console.error); });
   markerTextInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });

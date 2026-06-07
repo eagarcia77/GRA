@@ -10,11 +10,11 @@
   <main class="container">
     <section class="hero card commercial-hero">
       <div class="hero-badge">Commercial Edition</div>
-      <img src="./assets/eagr-learn-logo.svg" class="logo-marker logo-wide" alt="EAGR Learn logo"/>
+      <img id="heroBrandLogo" src="./assets/eagr-learn-logo.svg" class="logo-marker logo-wide" alt="Brand logo"/>
       <div class="hero-copy">
         <p class="hero-kicker">Immersive AR Experience Builder</p>
-        <h1 class="hero-title">EAGR Learn</h1>
-        <p class="institution-subtitle"><strong>Commercial Edition</strong></p>
+        <h1 class="hero-title" id="heroBrandTitle">EAGR Learn</h1>
+        <p class="institution-subtitle" id="productSubtitle"><strong>Future AR Studio</strong></p>
         <p class="hero-text">Plataforma comercial con visuales futuristas para crear experiencias de <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Incluye <strong>3D visual mode</strong>, <strong>WebXR Surface Mode</strong>, soporte <strong>GLB/GLTF</strong>, <strong>premium QR styles</strong>, generación de <strong>Markers</strong> y exportación de recursos lista para compartir.</p>
         <div class="hero-actions actions">
           <a href="#builder" class="button-link">Launch Builder</a>
@@ -76,16 +76,20 @@
         <small><strong>WebXR Surface Mode</strong> es para modelos 3D en formato GLB/GLTF. Permite una experiencia markerless compatible con colocación en superficie en dispositivos soportados.</small>
 
         <div class="brand-settings-card">
-          <h3>Brand Settings</h3>
-          <p class="brand-settings-note">Personalice la experiencia con su marca. El logo subido se aplicará a las imágenes exportadas y a la vista del generador.</p>
+          <h3>Brand Settings + White Label</h3>
+          <p class="brand-settings-note">Personalice la experiencia con su marca. Puede subir un logo, usar logo por URL, guardar los ajustes automáticamente y activar modo white-label.</p>
           <div class="brand-settings-grid">
             <div>
               <label for="brandName">Brand Name</label>
               <input id="brandName" type="text" maxlength="40" placeholder="Your brand name" value="EAGR Learn"/>
             </div>
             <div>
+              <label for="brandProductName">Product Name</label>
+              <input id="brandProductName" type="text" maxlength="50" placeholder="Product or platform name" value="Future AR Studio"/>
+            </div>
+            <div>
               <label for="brandFooter">Brand Footer</label>
-              <input id="brandFooter" type="text" maxlength="80" placeholder="Custom footer text" value="Future AR Studio"/>
+              <input id="brandFooter" type="text" maxlength="80" placeholder="Custom footer text" value="Commercial AR Experience Builder"/>
             </div>
             <div>
               <label for="brandPrimary">Primary Color</label>
@@ -95,15 +99,37 @@
               <label for="brandSecondary">Secondary Color</label>
               <input id="brandSecondary" type="color" value="#ffd86b" class="color-input"/>
             </div>
+            <div>
+              <label for="brandLogoUrl">Logo URL</label>
+              <input id="brandLogoUrl" type="url" placeholder="https://example.com/logo.png"/>
+              <small>Use una URL pública a PNG, JPG, WEBP o SVG.</small>
+            </div>
             <div class="brand-upload-col">
               <label for="brandLogoUpload">Upload Logo</label>
               <input id="brandLogoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"/>
-              <small>Use PNG, JPG, WEBP or SVG. The uploaded logo is used in exported visual assets.</small>
+              <small>Use PNG, JPG, WEBP or SVG. El logo subido tiene prioridad sobre Logo URL.</small>
             </div>
             <div class="brand-logo-preview-box">
               <span class="brand-preview-label">Logo Preview</span>
               <img id="brandLogoPreview" src="./assets/eagr-learn-logo.svg" alt="Brand logo preview"/>
             </div>
+          </div>
+
+          <div class="white-label-options">
+            <label class="toggle-row">
+              <input id="whiteLabelMode" type="checkbox"/>
+              <span>White-label mode: hide EAGR Learn branding from generated assets</span>
+            </label>
+            <label class="toggle-row">
+              <input id="autoSaveBrand" type="checkbox" checked/>
+              <span>Auto-save Brand Settings on this browser</span>
+            </label>
+          </div>
+
+          <div class="actions brand-actions">
+            <button id="saveBrandBtn" type="button">Save Brand Settings</button>
+            <button id="resetBrandBtn" type="button">Reset Brand</button>
+            <button id="applyBrandBtn" type="button" class="primary">Apply Brand Preview</button>
           </div>
         </div>
 

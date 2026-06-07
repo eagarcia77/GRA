@@ -6,7 +6,10 @@ const description = params.get('x') || params.get('description') || 'Markerless 
 const brandName = params.get('bn') || 'EAGR Learn';
 const brandPrimary = params.get('bp') || '#2ae4af';
 const brandSecondary = params.get('bs') || '#ffd86b';
-const brandFooter = params.get('bf') || 'Future AR Studio';
+const brandFooter = params.get('bf') || 'Commercial AR Experience Builder';
+const brandProductName = params.get('pn') || 'Future AR Studio';
+const brandLogoUrl = params.get('bl') || '';
+const whiteLabelMode = params.get('wl') === '1';
 
 const titleEl = document.getElementById('title');
 const descriptionEl = document.getElementById('description');
@@ -14,7 +17,7 @@ const modelViewer = document.getElementById('modelViewer');
 const openModel = document.getElementById('openModel');
 const errorBox = document.getElementById('errorBox');
 
-titleEl.textContent = title;
+titleEl.textContent = title || brandName;
 descriptionEl.textContent = description || brandFooter;
 
 function showError(message){

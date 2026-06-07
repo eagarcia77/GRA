@@ -261,3 +261,10 @@ code{background:rgba(255,255,255,.07);color:#fff}
 .brand-preview-label{font-size:.86rem;font-weight:700;color:#dff3ff}
 #brandLogoPreview{display:block;max-width:200px;max-height:88px;width:auto;height:auto;object-fit:contain;background:#fff;border-radius:12px;padding:8px;border:1px solid rgba(143,190,222,.12)}
 @media(max-width:900px){.brand-settings-grid{grid-template-columns:1fr}}
+
+/* Full white-label controls */
+.white-label-options{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(143,190,222,.12)}
+.toggle-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(143,190,222,.10);cursor:pointer}
+.toggle-row input{width:auto;margin:0;accent-color:#2ae4af}
+.toggle-row span{color:#d8e8f3;font-weight:700}
+.brand-actions{margin-top:14px}
