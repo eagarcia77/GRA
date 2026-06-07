@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EAGR Learn | WebXR Surface Viewer</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    :root{--bg:#07111b;--panel:rgba(10,18,28,.82);--line:rgba(143,190,222,.18);--text:#eaf7ff;--muted:#9fb7c8;--green:#2ae4af;--blue:#1cb1ff;--gold:#ffd86b}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,rgba(42,228,175,.12),transparent 28%),radial-gradient(circle at top right,rgba(28,177,255,.14),transparent 24%),linear-gradient(180deg,#061019,#091622 50%,#07111b);color:var(--text);min-height:100vh}
+    .wrap{max-width:1180px;margin:0 auto;padding:24px}
+    .hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:20px;border:1px solid var(--line);border-radius:24px;background:var(--panel);box-shadow:0 24px 60px rgba(0,0,0,.28);backdrop-filter:blur(18px);margin-bottom:18px}
+    .badge{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(42,228,175,.12);border:1px solid rgba(42,228,175,.22);color:#7ef1ca;font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase}
+    h1{margin:.7rem 0 .3rem;font-size:clamp(2rem,5vw,3.5rem);background:linear-gradient(90deg,#fff,#b8ffe9,#9eb8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    p{color:#d8e8f3;line-height:1.55}
+    .viewer-card{border:1px solid var(--line);border-radius:28px;background:rgba(10,18,28,.82);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+    model-viewer{width:100%;height:min(74vh,760px);background:radial-gradient(circle at center,rgba(42,228,175,.10),rgba(8,17,27,1) 70%);--poster-color:transparent}
+    .ar-button{background:linear-gradient(135deg,var(--green),var(--blue));color:#021018;border:0;border-radius:999px;padding:14px 20px;font-weight:900;position:absolute;left:50%;bottom:28px;transform:translateX(-50%);box-shadow:0 16px 30px rgba(42,228,175,.18)}
+    .fallback{padding:18px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+    .fallback a{display:inline-flex;text-decoration:none;border-radius:999px;padding:12px 16px;background:linear-gradient(135deg,var(--gold),#ffb14d);color:#201300;font-weight:900}
+    .notice{margin-top:18px;padding:16px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:#a8becd}
+    .error{display:none;margin-top:18px;padding:16px;border-radius:18px;background:rgba(255,102,125,.12);border:1px solid rgba(255,102,125,.25);color:#ffd8de}
+    @media(max-width:800px){.hero{flex-direction:column}.fallback{grid-template-columns:1fr}model-viewer{height:68vh}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <span class="badge">WebXR Surface Mode</span>
+        <h1 id="title">EAGR Learn AR</h1>
+        <p id="description">Markerless AR viewer for GLB/GLTF 3D models. Use the AR button to place the model on a real surface when the device supports it.</p>
+      </div>
+      <span class="badge">GLB / GLTF</span>
+    </section>
+
+    <section class="viewer-card">
+      <model-viewer id="modelViewer"
+        camera-controls
+        touch-action="pan-y"
+        auto-rotate
+        shadow-intensity="1"
+        exposure="1"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        ar-scale="auto"
+        environment-image="neutral"
+        alt="3D model">
+        <button slot="ar-button" class="ar-button">Launch Markerless AR</button>
+      </model-viewer>
+      <div class="fallback">
+        <p><strong>Fallback:</strong> If WebXR is not available, rotate, zoom and inspect the 3D model in this viewer.</p>
+        <a id="openModel" href="#" target="_blank" rel="noopener">Open Model File</a>
+      </div>
+    </section>
+
+    <div id="errorBox" class="error"></div>
+    <div class="notice">
+      WebXR Surface Mode works best on mobile devices and browsers that support immersive AR. Android devices may open WebXR or Scene Viewer; Apple devices may require compatible USDZ/Quick Look workflows, depending on the model and browser.
+    </div>
+  </main>
+  <script src="./js/webxr-viewer.js"></script>
+</body>
+</html>

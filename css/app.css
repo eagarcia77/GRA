@@ -233,7 +233,6 @@ code{background:rgba(255,255,255,.07);color:#fff}
 .logo-wide{width:min(260px,100%);height:auto;background:transparent;border:0;box-shadow:none;border-radius:0;padding:0}
 .simple-marker-panel img,.custom-marker-download-card img{background:#fff;max-width:min(460px,100%)}
 
-
 /* Marker designer controls */
 .marker-design-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;margin-bottom:10px}
 .color-input{height:52px;padding:6px 8px;border-radius:14px;cursor:pointer}
@@ -241,3 +240,12 @@ code{background:rgba(255,255,255,.07);color:#fff}
 .color-input::-webkit-color-swatch{border:none;border-radius:10px}
 .color-input::-moz-color-swatch{border:none;border-radius:10px}
 @media(max-width:900px){.marker-design-grid{grid-template-columns:1fr}}
+
+/* WebXR and GLB/GLTF advanced mode */
+.webxr-feature-card{position:relative;overflow:hidden}
+.webxr-feature-card::before{content:"";position:absolute;right:-120px;top:-120px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(28,177,255,.18),rgba(28,177,255,0) 70%);pointer-events:none}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.feature-pill{padding:16px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(143,190,222,.14)}
+.feature-pill strong{display:block;color:#7ef1ca;margin-bottom:6px}
+.feature-pill span{display:block;color:#a8becd;line-height:1.45}
+@media(max-width:900px){.feature-grid{grid-template-columns:1fr}}

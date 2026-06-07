@@ -1,5 +1,6 @@
 const $ = id => document.getElementById(id);
 const contentTypeInput = $('contentType');
+const advancedArModeInput = $('advancedArMode');
 const markerTextInput = $('markerText');
 const markerTextColorInput = $('markerTextColor');
 const markerVisualStyleInput = $('markerVisualStyle');
@@ -220,6 +221,7 @@ async function createCustomMarkerDataUrl(label, textColor, visualStyle){
   return canvas.toDataURL('image/png');
 }
 
+
 function getMarkerConfig(){
   const label = sanitizeMarkerLabel(markerTextInput ? markerTextInput.value : 'EAGR Learn');
   const textColor = markerTextColorInput ? markerTextColorInput.value : '#0b1824';
@@ -233,7 +235,7 @@ async function refreshMarkerSelectionUI(){
   cfg.image = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.src = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.alt = `Custom Marker ${cfg.label}`;
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}. Style: ${getMarkerStyleLabel(cfg.visualStyle)}. Color: ${cfg.textColor.toUpperCase()}.`; 
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}. Style: ${getMarkerStyleLabel(cfg.visualStyle)}. Color: ${cfg.textColor.toUpperCase()}.`;
   if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label} · ${getMarkerStyleLabel(cfg.visualStyle)}`;
   if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
   if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
@@ -269,9 +271,23 @@ function detectType(url){
   if(selected !== 'auto') return selected;
   if(/youtube\.com|youtu\.be/.test(url)) return 'youtube';
   if(/\.(mp4|webm|ogg|mov|m4v)$/.test(clean)) return 'video';
+  if(/\.(glb|gltf)$/.test(clean)) return 'model';
   if(/\.(png|jpg|jpeg|webp|gif)$/.test(clean)) return 'image';
   if(clean.endsWith('.pdf')) return 'pdf';
   return 'link';
+}
+
+
+function getAdvancedArMode(type){
+  const selected = advancedArModeInput ? advancedArModeInput.value : 'auto';
+  if(selected === 'webxr') return 'webxr';
+  if(selected === 'marker') return 'marker';
+  return type === 'model' ? 'webxr' : 'marker';
+}
+
+function buildViewerPath(type, mode){
+  if(mode === 'webxr') return 'webxr-viewer.html';
+  return 'v.html';
 }
 
 function buildArUrl(){
@@ -281,16 +297,18 @@ function buildArUrl(){
   const base = (baseUrlInput.value.trim() || currentBaseUrl()).replace(/index\.html$/i, '');
   if(!url) return '';
   const type = detectType(url);
+  const mode = getAdvancedArMode(type);
   const finalUrl = type === 'youtube' ? getYoutubeWatchUrl(url) : url;
   const markerCfg = getMarkerConfig();
   const params = new URLSearchParams();
   params.set('t', type);
   params.set('u', finalUrl);
-  params.set('m', 'custom');
+  params.set('m', mode === 'webxr' ? 'webxr' : 'custom');
+  params.set('arMode', mode);
   params.set('ml', markerCfg.label);
   if(title) params.set('n', title);
   if(description) params.set('x', description);
-  return `${base}v.html?${params.toString()}`;
+  return `${base}${buildViewerPath(type, mode)}?${params.toString()}`;
 }
 
 function resetPreview(){
@@ -339,6 +357,13 @@ function testContent(){
     };
     tester.onerror = () => setStatus('El video no se pudo validar. Aun así puedes generar el QR si tiene permisos Read.', 'warn');
     tester.src = url;
+    return;
+  }
+
+  if(type === 'model'){
+    previewOpenBtn.href = url;
+    previewWrap.classList.remove('hidden');
+    setStatus('Modelo 3D detectado. Use WebXR Surface Mode para abrirlo con colocación en superficie si el dispositivo lo soporta.', 'ok');
     return;
   }
 
@@ -627,11 +652,12 @@ async function generate(){
   const type = detectType(contentUrlInput.value.trim());
   const style = qrStyleInput.value;
   const markerCfg = await refreshMarkerSelectionUI();
+  const arMode = getAdvancedArMode(type);
 
   resultUrl.value = arUrl;
   openBtn.href = arUrl;
   openBtn.classList.remove('disabled');
-  setStatus(`Creando imágenes con el Marker personalizado ${markerCfg.label} (${getMarkerStyleLabel(markerCfg.visualStyle)})...`, 'warn');
+  setStatus(arMode === 'webxr' ? `Creando experiencia WebXR Surface para ${markerCfg.label}...` : `Creando imágenes con el Marker personalizado ${markerCfg.label} (${getMarkerStyleLabel(markerCfg.visualStyle)})...`, 'warn');
 
   try{
     const integratedQr = await createQrDataUrl(arUrl, style, false);
@@ -651,7 +677,7 @@ async function generate(){
     downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${markerCfg.visualStyle}_${type}_${style}.png`;
     downloadSeparatedBtn.classList.remove('disabled');
 
-    setStatus(`Listo. El Marker personalizado es ${markerCfg.label} con estilo ${getMarkerStyleLabel(markerCfg.visualStyle)}.`, 'ok');
+    setStatus(arMode === 'webxr' ? `Listo. WebXR Surface Mode activado para modelo 3D.` : `Listo. El Marker personalizado es ${markerCfg.label} con estilo ${getMarkerStyleLabel(markerCfg.visualStyle)}.`, 'ok');
   }catch(e){
     console.error(e);
     integratedPreview.innerHTML = '<p>No se pudo crear la versión integrada.</p>';

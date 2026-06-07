@@ -15,7 +15,7 @@
         <p class="hero-kicker">Immersive AR Experience Builder</p>
         <h1 class="hero-title">EAGR Learn</h1>
         <p class="institution-subtitle"><strong>Commercial Edition</strong></p>
-        <p class="hero-text">Plataforma comercial con visuales futuristas para crear experiencias de <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Incluye <strong>3D visual mode</strong>, <strong>premium QR styles</strong>, generación de <strong>Markers</strong> y exportación de recursos lista para compartir.</p>
+        <p class="hero-text">Plataforma comercial con visuales futuristas para crear experiencias de <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Incluye <strong>3D visual mode</strong>, <strong>WebXR Surface Mode</strong>, soporte <strong>GLB/GLTF</strong>, <strong>premium QR styles</strong>, generación de <strong>Markers</strong> y exportación de recursos lista para compartir.</p>
         <div class="hero-actions actions">
           <a href="#builder" class="button-link">Launch Builder</a>
           <a href="./markers.html" class="button-link secondary-link">Explore Markers</a>
@@ -25,9 +25,9 @@
 
     <section class="stats-grid">
       <article class="stat-card">
-        <span class="stat-label">3D Visual Mode</span>
-        <strong class="stat-value">Futuristic</strong>
-        <p>Imágenes con efecto holográfico, profundidad y sensación premium.</p>
+        <span class="stat-label">WebXR + 3D</span>
+        <strong class="stat-value">Markerless</strong>
+        <p>Soporte para modelos GLB/GLTF y modo WebXR Surface para experiencias markerless compatibles.</p>
       </article>
       <article class="stat-card">
         <span class="stat-label">Smart Marker System</span>
@@ -48,7 +48,7 @@
 
     <section class="alert card">
       <h2>Smart Custom Marker</h2>
-      <p>Escriba cualquier texto para su Marker y el sistema generará automáticamente una versión visual personalizada, manteniendo un núcleo optimizado para la detección AR. Así, el usuario puede personalizar el nombre del Marker sin complicaciones técnicas.</p>
+      <p>Escriba cualquier texto para su Marker o use WebXR Surface Mode para experiencias markerless con modelos 3D GLB/GLTF. El sistema mantiene un flujo fácil para QR, Marker AR y AR avanzada.</p>
     </section>
 
     <section id="builder" class="grid">
@@ -64,7 +64,16 @@
           <option value="youtube">YouTube</option>
           <option value="pdf">PDF document</option>
           <option value="link">Web link</option>
+          <option value="model">3D Model GLB/GLTF</option>
         </select>
+
+        <label for="advancedArMode">Advanced AR Mode</label>
+        <select id="advancedArMode">
+          <option value="auto">Auto Mode</option>
+          <option value="marker">Marker AR Mode</option>
+          <option value="webxr">WebXR Surface Mode</option>
+        </select>
+        <small><strong>WebXR Surface Mode</strong> es para modelos 3D en formato GLB/GLTF. Permite una experiencia markerless compatible con colocación en superficie en dispositivos soportados.</small>
 
         <label for="markerText">Marker Text</label>
         <input id="markerText" type="text" maxlength="20" placeholder="Write any text, for example: BRAND, LAB, TOUR, EVENT..." value="EAGR Learn"/>
@@ -104,7 +113,7 @@
         </div>
 
         <label for="contentUrl">Content URL</label>
-        <input id="contentUrl" type="url" placeholder="https://example.com/assets/your-file.pdf"/>
+        <input id="contentUrl" type="url" placeholder="https://example.com/assets/model.glb, image.png, video.mp4, file.pdf..."/>
         <small>Use un enlace directo y público. Funciona con GitHub Pages y otros recursos web compatibles.</small>
 
         <label for="title">Experience Title</label>
@@ -149,7 +158,7 @@
 
       <div class="card">
         <h2>2. Export Experience Assets</h2>
-        <p>El sistema crea dos versiones premium: <strong>Integrated</strong> y <strong>Separated</strong>. Ambas usan el Marker personalizado y pueden compartirse fácilmente.</p>
+        <p>El sistema crea dos versiones premium: <strong>Integrated</strong> y <strong>Separated</strong>. Si usa <strong>WebXR Surface Mode</strong>, el QR abrirá el visor markerless para modelos 3D GLB/GLTF.</p>
 
         <div class="dual-preview-grid">
           <div class="preview-card">
@@ -178,6 +187,7 @@
           <a href="./markers.html" target="_blank" rel="noopener" class="button-link">View Markers</a>
           <a href="./test-marker.html" target="_blank" rel="noopener" class="button-link">Test Marker</a>
           <a href="./diagnostico-contenido.html" target="_blank" rel="noopener" class="button-link">Diagnostics</a>
+          <a href="./webxr-viewer.html" target="_blank" rel="noopener" class="button-link">WebXR Viewer</a>
         </div>
       </div>
     </section>
@@ -200,10 +210,22 @@
       </div>
     </section>
 
+
+    <section class="card webxr-feature-card">
+      <h2>Advanced WebXR / GLB / GLTF Surface Placement</h2>
+      <p>Esta edición añade un visor avanzado para modelos 3D en formato <strong>GLB</strong> o <strong>GLTF</strong>. En dispositivos compatibles, el usuario puede abrir el modelo en AR sin depender de un Marker, usando colocación sobre superficie.</p>
+      <div class="feature-grid">
+        <div class="feature-pill"><strong>WebXR Surface Mode</strong><span>Markerless AR para modelos 3D compatibles.</span></div>
+        <div class="feature-pill"><strong>GLB / GLTF</strong><span>Formato moderno para objetos 3D en web.</span></div>
+        <div class="feature-pill"><strong>Fallback Mode</strong><span>Si WebXR no está disponible, se muestra un visor 3D interactivo.</span></div>
+      </div>
+    </section>
+
     <section class="card">
       <h2>Recommended Workflow</h2>
       <ol>
         <li>Seleccione el <strong>Marker Type</strong>.</li>
+        <li>Seleccione <strong>WebXR Surface Mode</strong> si trabajará con un modelo 3D GLB/GLTF.</li>
         <li>Genere los assets visuales y revise la vista previa.</li>
         <li>Publique la versión Integrated o Separated en su sitio, LMS o repositorio.</li>
         <li>El usuario escanea el QR y apunta al mismo Marker seleccionado.</li>

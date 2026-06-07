@@ -30,3 +30,12 @@ Recommended workflow:
 New designer options:
 - Marker Text Color: choose the visible label color.
 - Marker Visual Style: choose Neon Premium, Gold Luxe, Glass Future, Minimal Clean or Cyber Grid.
+
+
+
+Advanced AR update:
+- Added WebXR Surface Mode for markerless AR experiences.
+- Added GLB/GLTF 3D model support.
+- Added webxr-viewer.html for surface placement compatible devices.
+- Marker AR remains as the universal fallback for images, video, PDF, YouTube and web links.
+- If WebXR is not supported, the 3D model still opens in an interactive viewer.
