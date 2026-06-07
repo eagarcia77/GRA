@@ -146,109 +146,75 @@ async function createCustomMarkerDataUrl(label, textColor, visualStyle){
   const theme = getMarkerDesignTheme(style, textColor || '#0b1824');
   const baseImg = await loadImage('./assets/hiro-marker-generic.png');
   const canvas = document.createElement('canvas');
-  canvas.width = 1080;
-  canvas.height = 1480;
+  canvas.width = 900;
+  canvas.height = 900;
   const ctx = canvas.getContext('2d');
 
-  const bg = ctx.createLinearGradient(0, 0, 1080, 1480);
-  bg.addColorStop(0, theme.outerBg[0]);
-  bg.addColorStop(0.5, theme.outerBg[1]);
-  bg.addColorStop(1, theme.outerBg[2]);
+  // Clean square marker card
+  const bg = ctx.createLinearGradient(0, 0, 900, 900);
+  bg.addColorStop(0, '#ffffff');
+  bg.addColorStop(1, style === 'minimal' ? '#f7fbfc' : '#fbfdfd');
   ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0,0,900,900);
 
-  const glowA = ctx.createRadialGradient(180, 150, 10, 180, 150, 250);
-  glowA.addColorStop(0, theme.glowA);
-  glowA.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glowA;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  const glowB = ctx.createRadialGradient(900, 170, 10, 900, 170, 250);
-  glowB.addColorStop(0, theme.glowB);
-  glowB.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glowB;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  drawRoundRect(ctx, 70, 60, 940, 1360, 42, 'rgba(13,24,36,.94)', theme.frameStroke);
-  if(style === 'minimal') drawRoundRect(ctx, 70, 60, 940, 1360, 42, '#ffffff', theme.frameStroke);
+  drawRoundRect(ctx, 44, 44, 812, 812, 34, '#ffffff', 'rgba(0,0,0,.08)');
   ctx.save();
-  ctx.globalAlpha = style === 'minimal' ? 0.04 : 0.1;
-  drawRoundRect(ctx, 88, 78, 904, 1324, 36, '#ffffff', null);
+  ctx.shadowColor = 'rgba(0,0,0,.10)';
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetY = 10;
+  drawRoundRect(ctx, 70, 70, 760, 760, 28, '#ffffff', theme.frameStroke || 'rgba(143,190,222,.22)');
   ctx.restore();
 
-  const badge = ctx.createLinearGradient(100, 95, 520, 170);
-  badge.addColorStop(0, theme.accentA);
-  badge.addColorStop(1, theme.accentB);
-  drawRoundRect(ctx, 110, 100, 410, 74, 22, badge, null);
-  ctx.fillStyle = style === 'minimal' ? '#ffffff' : '#04101a';
-  ctx.textAlign = 'center';
-  ctx.font = 'bold 32px Arial';
-  ctx.fillText(sanitizeBrandName(brandNameInput ? brandNameInput.value : 'EAGR Learn').toUpperCase().slice(0,18), 315, 147);
+  // Decorative clean AR corner marks
+  ctx.strokeStyle = theme.accentA;
+  ctx.lineWidth = 6;
+  const corners = [
+    [110,110,150,110,110,150],
+    [790,110,750,110,790,150],
+    [110,790,150,790,110,750],
+    [790,790,750,790,790,750]
+  ];
+  corners.forEach(c=>{ctx.beginPath(); ctx.moveTo(c[0],c[1]); ctx.lineTo(c[2],c[3]); ctx.moveTo(c[0],c[1]); ctx.lineTo(c[4],c[5]); ctx.stroke();});
 
-  drawRoundRect(ctx, 710, 104, 240, 66, 20, style === 'minimal' ? '#0b1824' : 'rgba(255,255,255,.05)', theme.chipStroke);
-  ctx.fillStyle = style === 'minimal' ? '#ffffff' : theme.accentC;
-  ctx.font = 'bold 20px Arial';
-  ctx.fillText(getMarkerStyleLabel(style).toUpperCase(), 830, 145);
+  // Draw the actual marker core larger and cleaner.
+  const markerX = 178, markerY = 150, markerSize = 544;
+  ctx.drawImage(baseImg, markerX, markerY, markerSize, markerSize);
 
-  ctx.textAlign = 'left';
-  ctx.fillStyle = theme.titleColor;
-  ctx.font = 'bold 52px Arial';
-  ctx.fillText('Premium AR Marker', 115, 262);
-  ctx.fillStyle = theme.subtitleColor;
-  ctx.font = '26px Arial';
-  ctx.fillText('Personalized visual marker with stable AR tracking core', 115, 306);
+  // Replace the visible HIRO word area with custom text.
+  const labelBoxX = markerX + 105;
+  const labelBoxY = markerY + 410;
+  const labelBoxW = 334;
+  const labelBoxH = 84;
 
-  drawRoundRect(ctx, 135, 350, 810, 760, 34, '#ffffff', theme.accentA);
-  drawRoundRect(ctx, 160, 375, 760, 710, 28, theme.innerBg, theme.innerStroke);
-  drawStyleExtras(ctx, style);
+  // Cover old HIRO word completely.
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(labelBoxX - 18, labelBoxY - 14, labelBoxW + 36, labelBoxH + 28);
+  drawRoundRect(ctx, labelBoxX - 6, labelBoxY - 2, labelBoxW + 12, labelBoxH + 4, 14, '#ffffff', theme.chipStroke || '#d7e5e0');
 
-  ctx.drawImage(baseImg, 222, 435, 636, 636);
-  drawRoundRect(ctx, 335, 934, 410, 78, 18, theme.chipFill, theme.chipStroke);
   ctx.fillStyle = theme.textColor;
   ctx.textAlign = 'center';
+  let markerFontSize = 42;
+  if(cleanLabel.length > 9) markerFontSize = 34;
+  if(cleanLabel.length > 14) markerFontSize = 28;
+  ctx.font = `bold ${markerFontSize}px Arial`;
+  if(cleanLabel.includes(' ') || cleanLabel.length > 12){
+    wrapText(ctx, cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 28, labelBoxW - 20, markerFontSize + 6, 2);
+  } else {
+    ctx.fillText(cleanLabel, labelBoxX + labelBoxW/2, labelBoxY + 54);
+  }
+
+  // Small name badge at the bottom for visual polish only.
+  const badge = ctx.createLinearGradient(180, 742, 720, 742);
+  badge.addColorStop(0, theme.accentA);
+  badge.addColorStop(1, theme.accentB);
+  drawRoundRect(ctx, 180, 700, 540, 72, 24, badge, null);
+  ctx.fillStyle = style === 'gold' ? '#3a2600' : '#061018';
+  if(style === 'minimal') ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 34px Arial';
-  wrapText(ctx, cleanLabel, 540, 979, 370, 34, 2);
-
-  ctx.strokeStyle = theme.accentA;
-  ctx.lineWidth = 8;
-  ctx.beginPath();
-  ctx.moveTo(185, 430); ctx.lineTo(185, 390); ctx.lineTo(225, 390);
-  ctx.moveTo(855, 430); ctx.lineTo(855, 390); ctx.lineTo(815, 390);
-  ctx.moveTo(185, 1030); ctx.lineTo(185, 1070); ctx.lineTo(225, 1070);
-  ctx.moveTo(855, 1030); ctx.lineTo(855, 1070); ctx.lineTo(815, 1070);
-  ctx.stroke();
-
-  const panel = ctx.createLinearGradient(135, 1150, 945, 1370);
-  panel.addColorStop(0, theme.panelFillA);
-  panel.addColorStop(1, theme.panelFillB);
-  drawRoundRect(ctx, 135, 1150, 810, 210, 30, panel, theme.frameStroke);
-  ctx.fillStyle = style === 'minimal' ? theme.accentB : theme.accentA;
-  ctx.textAlign = 'center';
-  ctx.font = 'bold 22px Arial';
-  ctx.fillText('VISIBLE LABEL', 540, 1202);
-
-  const pill = ctx.createLinearGradient(240, 1230, 840, 1308);
-  pill.addColorStop(0, theme.accentA);
-  pill.addColorStop(0.55, theme.accentB);
-  pill.addColorStop(1, theme.accentC);
-  drawRoundRect(ctx, 205, 1226, 670, 88, 28, pill, null);
-  ctx.fillStyle = style === 'minimal' ? '#ffffff' : '#04101a';
-  if(style === 'gold') ctx.fillStyle = '#3a2600';
-  if(style === 'cyber') ctx.fillStyle = '#0a0714';
-  ctx.font = 'bold 48px Arial';
-  wrapText(ctx, cleanLabel, 540, 1285, 600, 52, 2);
-
-  ctx.fillStyle = theme.footerText;
-  ctx.font = '22px Arial';
-  wrapText(ctx, `Style: ${getMarkerStyleLabel(style)} · The visible label uses your selected color.`, 540, 1348, 680, 28, 2);
-
-  ctx.fillStyle = theme.footerSmall;
-  ctx.font = '20px Arial';
-  ctx.fillText('Scan the QR and point the camera to this premium custom marker.', 540, 1412);
+  wrapText(ctx, cleanLabel, 450, 745, 500, 38, 1);
 
   return canvas.toDataURL('image/png');
 }
-
 
 function getMarkerConfig(){
   const label = sanitizeMarkerLabel(markerTextInput ? markerTextInput.value : 'EAGR Learn');
@@ -263,7 +229,7 @@ async function refreshMarkerSelectionUI(){
   cfg.image = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.src = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.alt = `Custom Marker ${cfg.label}`;
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}. Style: ${getMarkerStyleLabel(cfg.visualStyle)}. Color: ${cfg.textColor.toUpperCase()}.`;
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}. The HIRO word is replaced inside the marker. Style: ${getMarkerStyleLabel(cfg.visualStyle)}. Color: ${cfg.textColor.toUpperCase()}.`;
   if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label} · ${getMarkerStyleLabel(cfg.visualStyle)}`;
   if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
   if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
@@ -690,57 +656,49 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   canvas.height=1940;
   const ctx = canvas.getContext('2d');
 
-  ctx.fillStyle = theme.bg;
+  ctx.fillStyle = '#f7f7f7';
   ctx.fillRect(0,0,canvas.width,canvas.height);
   drawRoundRect(ctx,60,60,1480,1820,44,'#ffffff',theme.accent);
-  if(style==='inter') drawPremiumHeaderBars(ctx, 110, 94, 1380, theme);
 
-  if(brandLogo){ ctx.drawImage(brandLogo, 128, 98, 180, 86); }
+  if(brandLogo){ ctx.drawImage(brandLogo, 98, 96, 176, 80); }
   ctx.fillStyle = theme.accent;
-  ctx.font='bold 52px Arial';
   ctx.textAlign='center';
-  ctx.fillText(brandCfg.name.toUpperCase().slice(0,24),800,170);
-  if(style==='inter') drawPremiumRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.label);
-
+  ctx.font='bold 56px Arial';
+  ctx.fillText((brandCfg.name || 'EAGR Learn').toUpperCase().slice(0,24),800,165);
   ctx.fillStyle = theme.sub;
-  ctx.font='bold 20px Arial';
-  ctx.fillText(brandCfg.productName || brandCfg.footer,800,250);
-
+  ctx.font='bold 18px Arial';
+  ctx.fillText(brandCfg.productName || brandCfg.footer,800,236);
   ctx.fillStyle = theme.text;
   ctx.font='bold 40px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',800,295);
-
+  ctx.fillText(titleText || 'Experiencia AR',800,290);
   ctx.fillStyle = theme.sub;
   ctx.font='28px Arial';
-  ctx.fillText('Image · Video · YouTube · PDF · Link · 3D',800,342);
+  ctx.fillText('Image · Video · YouTube · PDF · Link · 3D',800,340);
 
-  drawRoundRect(ctx,170,380,1260,1270,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
+  // Large QR area
   ctx.drawImage(qr,200,410,1200,1200);
-  drawRoundRect(ctx,650,860,300,300,22,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,670,880,260,260);
 
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 25px Arial';
-  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1400);
+  // Only the clean marker in the middle of the QR code
+  const markerCardX = 585;
+  const markerCardY = 820;
+  const markerCardSize = 430;
+  drawRoundRect(ctx, markerCardX, markerCardY, markerCardSize, markerCardSize, 26, '#ffffff', '#d6d6d6');
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.12)';
+  ctx.shadowBlur = 18;
+  ctx.shadowOffsetY = 8;
+  drawRoundRect(ctx, markerCardX, markerCardY, markerCardSize, markerCardSize, 26, '#ffffff', '#d6d6d6');
+  ctx.restore();
+  ctx.drawImage(marker, markerCardX+18, markerCardY+18, markerCardSize-36, markerCardSize-36);
 
-  ctx.fillStyle = '#85714D';
-  ctx.font='bold 24px Arial';
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1450);
-
-  if(descriptionText){
-    ctx.fillStyle = theme.text;
-    ctx.font='24px Arial';
-    wrapText(ctx,descriptionText,800,1500,1040,30,3);
-  }
-
-  drawRoundRect(ctx,210,1650,1180,140,28,'#FFF4CC',theme.accent2);
+  drawRoundRect(ctx,210,1650,1180,130,28,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
-  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1705,1040,30,3);
+  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1710,1040,30,2);
 
   ctx.fillStyle = theme.sub;
   ctx.font='18px Arial';
-  ctx.fillText(brandCfg.whiteLabel ? `${brandCfg.name} · ${brandCfg.footer}` : `${brandCfg.name} · ${brandCfg.productName}`,800,1830);
+  ctx.fillText(`${brandCfg.name} · ${brandCfg.productName || brandCfg.footer}`,800,1830);
   return canvas.toDataURL('image/png');
 }
 
@@ -754,66 +712,48 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   canvas.height=1450;
   const ctx = canvas.getContext('2d');
 
-  ctx.fillStyle = theme.bg;
+  ctx.fillStyle = '#f7f7f7';
   ctx.fillRect(0,0,canvas.width,canvas.height);
   drawRoundRect(ctx,60,60,1680,1330,40,'#ffffff',theme.accent);
-  if(style==='inter') drawPremiumHeaderBars(ctx, 95, 92, 1610, theme);
 
   if(brandLogo){ ctx.drawImage(brandLogo, 110, 96, 165, 74); }
   ctx.fillStyle = theme.accent;
   ctx.font='bold 42px Arial';
   ctx.textAlign='left';
-  ctx.fillText(brandCfg.name.toUpperCase().slice(0,20),300,160);
-
-  if(style==='inter') drawPremiumRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.label);
-
+  ctx.fillText((brandCfg.name || 'EAGR Learn').toUpperCase().slice(0,20),300,160);
   ctx.fillStyle = theme.sub;
   ctx.font='bold 18px Arial';
   ctx.fillText(brandCfg.productName || brandCfg.footer,300,194);
-
   ctx.fillStyle = theme.text;
   ctx.font='bold 34px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',110,228);
+  ctx.fillText(titleText || 'Experiencia AR',110,246);
 
-  drawRoundRect(ctx,108,268,310,46,20,theme.chip,null);
+  // QR left
+  drawRoundRect(ctx,100,320,700,700,30,'#ffffff','#d7e5e0');
+  ctx.drawImage(qr,120,340,660,660);
   ctx.fillStyle = theme.text;
-  ctx.font='bold 22px Arial';
-  ctx.fillText(`Tipo: ${contentType}`,128,300);
-
-  drawRoundRect(ctx,96,336,700,700,30,'#ffffff','#d7e5e0');
   ctx.textAlign='center';
-  ctx.drawImage(qr,116,356,660,660);
+  ctx.font='bold 26px Arial';
+  ctx.fillText('Paso 1: Escanea el QR Code',450,1068);
+
+  // Large clean marker right
+  drawRoundRect(ctx,900,270,800,800,30,'#f9fbfa','#d7e5e0');
+  drawRoundRect(ctx,1008,378,584,584,28,'#ffffff','#d6d6d6');
+  ctx.drawImage(marker,1028,398,544,544);
   ctx.fillStyle = theme.text;
   ctx.font='bold 26px Arial';
-  ctx.fillText('Paso 1: Escanea el QR Code',446,1076);
+  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1068);
 
-  drawRoundRect(ctx,900,250,800,800,30,'#f9fbfa','#d7e5e0');
-  ctx.drawImage(marker,1020,340,560,560);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 26px Arial';
-  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1076);
-
-  drawRoundRect(ctx,105,1112,1590,95,18,'#eef7f3',null);
+  drawRoundRect(ctx,110,1130,1580,108,18,'#eef7f3',null);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,`Esta versión usa QR simple y Marker ${markerCfg.label} grande para facilitar el escaneo y la detección.`,900,1148,1480,28,2);
+  wrapText(ctx,`Esta versión usa un QR simple y un Marker ${markerCfg.label} más grande y limpio para facilitar el escaneo y la detección.`,900,1172,1460,28,2);
 
-  ctx.textAlign='left';
-  if(descriptionText){
-    ctx.fillStyle = theme.sub;
-    ctx.font='24px Arial';
-    wrapText(ctx,descriptionText,110,1258,1480,30,2);
-  }
-
-  drawRoundRect(ctx,110,1310,1490,78,18,'#FFF4CC',theme.accent2);
+  drawRoundRect(ctx,110,1280,1580,92,18,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  ctx.textAlign='center';
-  wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',900,1358,1320,28,2);
+  wrapText(ctx,`El Marker muestra la palabra ${markerCfg.label} sustituyendo HIRO.`,900,1335,1320,28,2);
 
-  ctx.fillStyle = theme.sub;
-  ctx.font='16px Arial';
-  ctx.fillText(brandCfg.whiteLabel ? `${brandCfg.name} · ${brandCfg.footer}` : `${brandCfg.name} · ${brandCfg.productName}`,900,1298);
   return canvas.toDataURL('image/png');
 }
 

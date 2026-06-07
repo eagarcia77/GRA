@@ -65,3 +65,10 @@ Final HIRO replacement fix:
 - The HIRO word area is now fully covered with a white plate.
 - The custom Marker Text is drawn inside that plate.
 - This corrected custom marker is used by the marker preview, marker PNG download, Integrated Version and Separated Version.
+
+
+Actualización de Marker e imágenes finales:
+- El Marker ahora se genera como una tarjeta cuadrada limpia, sin el diseño recargado anterior.
+- La palabra HIRO se sustituye visualmente dentro del Marker por el texto definido por el usuario.
+- La versión Integrated ahora muestra solamente el Marker en el centro del QR Code.
+- La versión Separated ahora usa un Marker más grande y limpio para mejorar la detección.
