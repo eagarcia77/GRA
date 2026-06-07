@@ -19,3 +19,10 @@ Important / Importante:
 The word HIRO should not be changed unless the program also generates a new PATT file. The image marker and PATT file must match for detection to work.
 
 La palabra HIRO no debe cambiarse a menos que el programa también genere un nuevo archivo PATT. La imagen del marcador y el archivo PATT deben coincidir para que la detección funcione.
+
+
+
+Update / Actualización:
+Logo URL, Upload Logo and Logo Preview were removed because they were not functional in this simplified version.
+
+Se eliminó Logo URL, Upload Logo y Logo Preview porque no eran funcionales en esta versión simplificada.

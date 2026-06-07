@@ -293,3 +293,11 @@ code{background:rgba(255,255,255,.07);color:#fff}
 }
 .functional-simplified-note h3,.functional-marker-notice h3{margin:0 0 8px;color:#7ef1ca}
 .functional-simplified-note p,.functional-marker-notice p{margin:0;color:#d8e8f3;line-height:1.55}
+
+/* Logo upload/url controls removed as nonfunctional */
+#brandLogoUrl,
+#brandLogoUpload,
+.brand-upload-col,
+.brand-logo-preview-box{
+  display:none !important;
+}

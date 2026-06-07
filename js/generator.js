@@ -6,9 +6,6 @@ const brandFooterInput = $('brandFooter');
 const brandProductNameInput = $('brandProductName');
 const brandPrimaryInput = $('brandPrimary');
 const brandSecondaryInput = $('brandSecondary');
-const brandLogoUrlInput = $('brandLogoUrl');
-const brandLogoUploadInput = $('brandLogoUpload');
-const brandLogoPreview = $('brandLogoPreview');
 const whiteLabelModeInput = $('whiteLabelMode');
 const autoSaveBrandInput = $('autoSaveBrand');
 const saveBrandBtn = $('saveBrandBtn');
@@ -56,7 +53,6 @@ const DEFAULT_BRAND_SETTINGS = {
   footer: 'Commercial AR Experience Builder',
   primary: '#2ae4af',
   secondary: '#ffd86b',
-  logoUrl: '',
   logoDataUrl: './assets/eagr-learn-logo.svg',
   whiteLabel: false,
   autoSave: true
@@ -257,7 +253,6 @@ function buildArUrl(){
   params.set('bf', brand.footer);
   params.set('pn', brand.productName);
   params.set('wl', brand.whiteLabel ? '1' : '0');
-  if(brand.logoUrl) params.set('bl', brand.logoUrl);
   return `${base}${buildViewerPath(type, mode)}?${params.toString()}`;
 }
 
@@ -433,10 +428,7 @@ function sanitizeProductName(raw){
 }
 
 function getLogoSource(){
-  if(currentBrandLogoDataUrl && currentBrandLogoDataUrl !== DEFAULT_BRAND_SETTINGS.logoDataUrl) return currentBrandLogoDataUrl;
-  const url = brandLogoUrlInput ? brandLogoUrlInput.value.trim() : '';
-  if(url) return url;
-  return currentBrandLogoDataUrl || DEFAULT_BRAND_SETTINGS.logoDataUrl;
+  return './assets/eagr-learn-logo.svg';
 }
 
 function getBrandConfig(){
@@ -446,7 +438,7 @@ function getBrandConfig(){
     footer: sanitizeFooter(brandFooterInput ? brandFooterInput.value : DEFAULT_BRAND_SETTINGS.footer),
     primary: brandPrimaryInput ? brandPrimaryInput.value : DEFAULT_BRAND_SETTINGS.primary,
     secondary: brandSecondaryInput ? brandSecondaryInput.value : DEFAULT_BRAND_SETTINGS.secondary,
-    logoUrl: brandLogoUrlInput ? brandLogoUrlInput.value.trim() : '',
+    
     logo: getLogoSource(),
     whiteLabel: whiteLabelModeInput ? !!whiteLabelModeInput.checked : false,
     autoSave: autoSaveBrandInput ? !!autoSaveBrandInput.checked : true
@@ -464,7 +456,6 @@ async function fileToDataUrl(file){
 
 async function refreshBrandPreview(){
   const brand = getBrandConfig();
-  if(brandLogoPreview) brandLogoPreview.src = brand.logo;
   if(heroBrandLogo) heroBrandLogo.src = brand.logo;
   if(heroBrandTitle) heroBrandTitle.textContent = brand.whiteLabel ? brand.name : brand.name;
   if(productSubtitle) productSubtitle.innerHTML = `<strong>${brand.productName}</strong>`;
@@ -483,7 +474,6 @@ function saveBrandSettings(showMessage=true){
       footer: brand.footer,
       primary: brand.primary,
       secondary: brand.secondary,
-      logoUrl: brand.logoUrl,
       logoDataUrl: currentBrandLogoDataUrl,
       whiteLabel: brand.whiteLabel,
       autoSave: brand.autoSave
@@ -504,7 +494,6 @@ function loadBrandSettings(){
     if(brandFooterInput) brandFooterInput.value = saved.footer || DEFAULT_BRAND_SETTINGS.footer;
     if(brandPrimaryInput) brandPrimaryInput.value = saved.primary || DEFAULT_BRAND_SETTINGS.primary;
     if(brandSecondaryInput) brandSecondaryInput.value = saved.secondary || DEFAULT_BRAND_SETTINGS.secondary;
-    if(brandLogoUrlInput) brandLogoUrlInput.value = saved.logoUrl || '';
     currentBrandLogoDataUrl = saved.logoDataUrl || DEFAULT_BRAND_SETTINGS.logoDataUrl;
     if(whiteLabelModeInput) whiteLabelModeInput.checked = !!saved.whiteLabel;
     if(autoSaveBrandInput) autoSaveBrandInput.checked = saved.autoSave !== false;
@@ -517,7 +506,6 @@ function resetBrandSettings(){
   if(brandFooterInput) brandFooterInput.value = DEFAULT_BRAND_SETTINGS.footer;
   if(brandPrimaryInput) brandPrimaryInput.value = DEFAULT_BRAND_SETTINGS.primary;
   if(brandSecondaryInput) brandSecondaryInput.value = DEFAULT_BRAND_SETTINGS.secondary;
-  if(brandLogoUrlInput) brandLogoUrlInput.value = DEFAULT_BRAND_SETTINGS.logoUrl;
   currentBrandLogoDataUrl = DEFAULT_BRAND_SETTINGS.logoDataUrl;
   if(whiteLabelModeInput) whiteLabelModeInput.checked = DEFAULT_BRAND_SETTINGS.whiteLabel;
   if(autoSaveBrandInput) autoSaveBrandInput.checked = DEFAULT_BRAND_SETTINGS.autoSave;
@@ -744,26 +732,11 @@ if(brandProductNameInput) brandProductNameInput.addEventListener('input', () => 
 if(brandFooterInput) brandFooterInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); });
 if(brandPrimaryInput) brandPrimaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
 if(brandSecondaryInput) brandSecondaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
-if(brandLogoUrlInput) brandLogoUrlInput.addEventListener('input', () => { currentBrandLogoDataUrl = DEFAULT_BRAND_SETTINGS.logoDataUrl; refreshBrandPreview().catch(console.error); });
 if(whiteLabelModeInput) whiteLabelModeInput.addEventListener('change', () => { refreshBrandPreview().catch(console.error); });
 if(autoSaveBrandInput) autoSaveBrandInput.addEventListener('change', () => { refreshBrandPreview().catch(console.error); });
 if(saveBrandBtn) saveBrandBtn.addEventListener('click', () => saveBrandSettings(true));
 if(resetBrandBtn) resetBrandBtn.addEventListener('click', resetBrandSettings);
 if(applyBrandBtn) applyBrandBtn.addEventListener('click', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); setStatus('Brand Preview aplicado.', 'ok'); });
-if(brandLogoUploadInput){
-  brandLogoUploadInput.addEventListener('change', async (e) => {
-    const file = e.target.files && e.target.files[0];
-    if(!file) return;
-    try{
-      currentBrandLogoDataUrl = await fileToDataUrl(file);
-      await refreshBrandPreview();
-      setStatus('Logo cargado correctamente.', 'ok');
-    }catch(err){
-      console.error(err);
-      setStatus('No se pudo cargar el logo.', 'error');
-    }
-  });
-}
 loadBrandSettings();
 refreshBrandPreview().catch(console.error);
 refreshMarkerSelectionUI().catch(console.error); });
