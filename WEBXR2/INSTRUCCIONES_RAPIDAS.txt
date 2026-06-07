@@ -1,0 +1,1 @@
+Abra index.html en un hosting HTTPS. En el celular toque 'Ver en AR'.
