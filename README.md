@@ -25,3 +25,8 @@ Recommended workflow:
 6. Download the integrated or separated visual.
 7. Open the AR link and scan the QR.
 8. Point the camera to the premium custom marker.
+
+
+New designer options:
+- Marker Text Color: choose the visible label color.
+- Marker Visual Style: choose Neon Premium, Gold Luxe, Glass Future, Minimal Clean or Cyber Grid.

@@ -225,3 +225,19 @@ code{background:rgba(255,255,255,.07);color:#fff}
 .marker-preview-caption{color:#dff3ff;font-weight:700}
 
 .logo-wide{width:min(260px,100%);height:auto;background:transparent;border:0;box-shadow:none;border-radius:0}
+
+
+/* Fix: make integrated preview fully visible */
+.preview-box{min-height:320px;padding:18px;overflow:auto;align-items:flex-start}
+.preview-box img{display:block;width:100%;height:auto;max-height:none;object-fit:contain}
+.logo-wide{width:min(260px,100%);height:auto;background:transparent;border:0;box-shadow:none;border-radius:0;padding:0}
+.simple-marker-panel img,.custom-marker-download-card img{background:#fff;max-width:min(460px,100%)}
+
+
+/* Marker designer controls */
+.marker-design-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;margin-bottom:10px}
+.color-input{height:52px;padding:6px 8px;border-radius:14px;cursor:pointer}
+.color-input::-webkit-color-swatch-wrapper{padding:0}
+.color-input::-webkit-color-swatch{border:none;border-radius:10px}
+.color-input::-moz-color-swatch{border:none;border-radius:10px}
+@media(max-width:900px){.marker-design-grid{grid-template-columns:1fr}}

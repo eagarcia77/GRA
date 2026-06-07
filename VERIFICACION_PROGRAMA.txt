@@ -33,3 +33,8 @@ Verified items:
 - JS syntax verified
 - Core marker pattern present
 - Premium custom marker generation present
+
+
+New designer options:
+- Marker Text Color: choose the visible label color.
+- Marker Visual Style: choose Neon Premium, Gold Luxe, Glass Future, Minimal Clean or Cyber Grid.

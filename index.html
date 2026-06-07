@@ -70,14 +70,33 @@
         <input id="markerText" type="text" maxlength="20" placeholder="Write any text, for example: BRAND, LAB, TOUR, EVENT..." value="EAGR Learn"/>
         <small>Escriba el texto que desee. El sistema lo colocará automáticamente en el Marker para una experiencia más simple y personalizada.</small>
 
+        <div class="marker-design-grid">
+          <div>
+            <label for="markerTextColor">Marker Text Color</label>
+            <input id="markerTextColor" type="color" value="#0b1824" class="color-input"/>
+            <small>Seleccione el color del texto visible del Marker.</small>
+          </div>
+          <div>
+            <label for="markerVisualStyle">Marker Visual Style</label>
+            <select id="markerVisualStyle">
+              <option value="neon">Neon Premium</option>
+              <option value="gold">Gold Luxe</option>
+              <option value="glass">Glass Future</option>
+              <option value="minimal">Minimal Clean</option>
+              <option value="cyber">Cyber Grid</option>
+            </select>
+            <small>Seleccione el estilo visual premium del Marker.</small>
+          </div>
+        </div>
+
         <div class="marker-preview-large simple-marker-panel">
           <div class="marker-preview-topbar">
-            <span class="marker-preview-pill">Custom Marker</span>
+            <span class="marker-preview-pill">Custom Marker Designer</span>
             <span class="marker-preview-status" id="selectedMarkerStatus">Ready</span>
           </div>
           <h3>Live Marker Preview</h3>
           <img id="selectedMarkerPreview" src="./assets/hiro-marker-generic.png" alt="Selected Marker Preview"/>
-          <div id="selectedMarkerCaption" class="marker-preview-caption">Premium Custom Marker text: EAGR LEARN.</div>
+          <div id="selectedMarkerCaption" class="marker-preview-caption">Premium Custom Marker text: EAGR LEARN. Style: Neon Premium. Color: #0B1824.</div>
           <div class="actions compact-actions">
             <a id="downloadMarkerPngBtn" href="#" download="custom-marker.png" class="button-link">Download Premium Marker PNG</a>
             <a id="downloadMarkerPattBtn" href="./assets/hiro-marker-generic.patt" download="custom-marker.patt" class="button-link gold">Download Core Pattern PATT</a>
@@ -167,10 +186,10 @@
 
     <section class="card">
       <h2>Download Custom Marker Assets</h2>
-      <p>Download each Marker separately in <strong>PNG</strong> and <strong>PATT</strong> format for a professional workflow.</p>
+      <p>Download the premium custom marker in <strong>PNG</strong> format and the optimized core pattern in <strong>PATT</strong> format. You can also personalize the text color and choose from multiple premium styles.</p>
       <div class="marker-card-grid single-marker-card-grid">
         <div class="marker-card custom-marker-download-card">
-          <h3>Premium Premium Custom Marker</h3>
+          <h3>Premium Custom Marker</h3>
           <p>Escriba el texto que quiera en el campo Marker Text. Esta sección genera un marker más elegante, comercial y visualmente premium.</p>
           <img id="downloadMarkerPreview" src="./assets/hiro-marker-generic.png" alt="Custom Marker"/>
           <div class="actions">

@@ -1,6 +1,8 @@
 const $ = id => document.getElementById(id);
 const contentTypeInput = $('contentType');
 const markerTextInput = $('markerText');
+const markerTextColorInput = $('markerTextColor');
+const markerVisualStyleInput = $('markerVisualStyle');
 const contentUrlInput = $('contentUrl');
 const titleInput = $('title');
 const descriptionInput = $('description');
@@ -42,60 +44,200 @@ function currentBaseUrl(){
 }
 
 function sanitizeMarkerLabel(raw){
-  return (raw || 'EAGR Learn').trim().replace(/\s+/g,' ').toUpperCase().slice(0,20) || 'EAGR LEARNING';
+  return (raw || 'EAGR Learn').trim().replace(/\s+/g,' ').toUpperCase().slice(0,20) || 'EAGR LEARN';
 }
 
-async function createCustomMarkerDataUrl(label){
+function getMarkerStyleLabel(style){
+  const labels = {
+    neon: 'Neon Premium',
+    gold: 'Gold Luxe',
+    glass: 'Glass Future',
+    minimal: 'Minimal Clean',
+    cyber: 'Cyber Grid'
+  };
+  return labels[style] || 'Neon Premium';
+}
+
+function getMarkerDesignTheme(style, textColor){
+  const base = {
+    textColor: textColor || '#0b1824',
+    outerBg: ['#07111b','#0b1824','#08111b'],
+    glowA: 'rgba(42,228,175,.22)',
+    glowB: 'rgba(255,216,107,.18)',
+    panelFillA: 'rgba(10,17,27,.98)',
+    panelFillB: 'rgba(14,27,41,.98)',
+    accentA: '#2ae4af',
+    accentB: '#1cb1ff',
+    accentC: '#ffd86b',
+    frameStroke: 'rgba(143,190,222,.26)',
+    titleColor: '#ffffff',
+    subtitleColor: '#a8becd',
+    innerBg: '#f5f8fb',
+    innerStroke: '#d7e5e0',
+    chipFill: '#ffffff',
+    chipStroke: '#d7e5e0',
+    footerText: '#d8e8f3',
+    footerSmall: '#7d96a8'
+  };
+  if(style === 'gold') return { ...base, outerBg:['#14100a','#261a10','#15110c'], glowA:'rgba(255,216,107,.16)', glowB:'rgba(255,191,69,.22)', panelFillA:'rgba(27,20,11,.98)', panelFillB:'rgba(44,31,18,.98)', accentA:'#ffd86b', accentB:'#ffbf45', accentC:'#fff3c1', frameStroke:'rgba(255,216,107,.26)', subtitleColor:'#e6d9b6', chipStroke:'#f0d48a' };
+  if(style === 'glass') return { ...base, outerBg:['#061019','#0a2030','#07111b'], glowA:'rgba(28,177,255,.18)', glowB:'rgba(42,228,175,.18)', panelFillA:'rgba(7,16,26,.88)', panelFillB:'rgba(17,34,50,.84)', accentA:'#b8ffe9', accentB:'#1cb1ff', accentC:'#7ef1ca', frameStroke:'rgba(184,255,233,.22)', chipFill:'rgba(255,255,255,.82)' };
+  if(style === 'minimal') return { ...base, outerBg:['#f3f7fa','#eaf2f7','#f9fbfc'], glowA:'rgba(0,0,0,0)', glowB:'rgba(0,0,0,0)', panelFillA:'rgba(245,248,251,.98)', panelFillB:'rgba(236,242,246,.98)', accentA:'#0b1824', accentB:'#2a3d4f', accentC:'#9fb7c8', frameStroke:'rgba(42,61,79,.16)', titleColor:'#0b1824', subtitleColor:'#4f6778', chipStroke:'#d7e5e0', footerText:'#1c2f3f', footerSmall:'#61798a' };
+  if(style === 'cyber') return { ...base, outerBg:['#05070d','#0c1020','#060913'], glowA:'rgba(187,134,252,.16)', glowB:'rgba(28,177,255,.18)', panelFillA:'rgba(10,10,22,.98)', panelFillB:'rgba(18,20,42,.98)', accentA:'#7ef1ca', accentB:'#a970ff', accentC:'#1cb1ff', frameStroke:'rgba(169,112,255,.24)', subtitleColor:'#b8c6ff', chipStroke:'rgba(169,112,255,.20)' };
+  return base;
+}
+
+function drawStyleExtras(ctx, style){
+  if(style === 'cyber'){
+    ctx.save();
+    ctx.strokeStyle = 'rgba(126,241,202,.14)';
+    ctx.lineWidth = 1;
+    for(let x=120;x<950;x+=44){ ctx.beginPath(); ctx.moveTo(x,360); ctx.lineTo(x,1100); ctx.stroke(); }
+    for(let y=360;y<1100;y+=44){ ctx.beginPath(); ctx.moveTo(150,y); ctx.lineTo(930,y); ctx.stroke(); }
+    ctx.restore();
+  }
+  if(style === 'glass'){
+    ctx.save();
+    ctx.globalAlpha = .16;
+    drawRoundRect(ctx, 185, 402, 710, 110, 24, '#ffffff', null);
+    drawRoundRect(ctx, 185, 950, 710, 90, 24, '#ffffff', null);
+    ctx.restore();
+  }
+  if(style === 'gold'){
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,216,107,.35)';
+    ctx.lineWidth = 3;
+    drawRoundRect(ctx, 150, 365, 780, 730, 30, null, 'rgba(255,216,107,.35)');
+    ctx.restore();
+  }
+}
+
+async function createCustomMarkerDataUrl(label, textColor, visualStyle){
   const cleanLabel = sanitizeMarkerLabel(label);
+  const style = visualStyle || 'neon';
+  const theme = getMarkerDesignTheme(style, textColor || '#0b1824');
   const baseImg = await loadImage('./assets/hiro-marker-generic.png');
   const canvas = document.createElement('canvas');
-  canvas.width = 900;
-  canvas.height = 1220;
+  canvas.width = 1080;
+  canvas.height = 1480;
   const ctx = canvas.getContext('2d');
 
-  ctx.fillStyle = '#ffffff';
+  const bg = ctx.createLinearGradient(0, 0, 1080, 1480);
+  bg.addColorStop(0, theme.outerBg[0]);
+  bg.addColorStop(0.5, theme.outerBg[1]);
+  bg.addColorStop(1, theme.outerBg[2]);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const glowA = ctx.createRadialGradient(180, 150, 10, 180, 150, 250);
+  glowA.addColorStop(0, theme.glowA);
+  glowA.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glowA;
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  drawRoundRect(ctx, 70, 36, 760, 110, 28, '#07111b', '#2ae4af');
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 30px Arial';
+  const glowB = ctx.createRadialGradient(900, 170, 10, 900, 170, 250);
+  glowB.addColorStop(0, theme.glowB);
+  glowB.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glowB;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  drawRoundRect(ctx, 70, 60, 940, 1360, 42, 'rgba(13,24,36,.94)', theme.frameStroke);
+  if(style === 'minimal') drawRoundRect(ctx, 70, 60, 940, 1360, 42, '#ffffff', theme.frameStroke);
+  ctx.save();
+  ctx.globalAlpha = style === 'minimal' ? 0.04 : 0.1;
+  drawRoundRect(ctx, 88, 78, 904, 1324, 36, '#ffffff', null);
+  ctx.restore();
+
+  const badge = ctx.createLinearGradient(100, 95, 520, 170);
+  badge.addColorStop(0, theme.accentA);
+  badge.addColorStop(1, theme.accentB);
+  drawRoundRect(ctx, 110, 100, 410, 74, 22, badge, null);
+  ctx.fillStyle = style === 'minimal' ? '#ffffff' : '#04101a';
   ctx.textAlign = 'center';
-  ctx.fillText('SMART CUSTOM MARKER', canvas.width/2, 92);
+  ctx.font = 'bold 32px Arial';
+  ctx.fillText('EAGR LEARN', 315, 147);
 
-  drawRoundRect(ctx, 105, 180, 690, 690, 28, '#ffffff', '#d7e5e0');
-  ctx.drawImage(baseImg, 125, 200, 650, 650);
-
-  drawRoundRect(ctx, 100, 920, 700, 180, 28, '#0d1824', '#2ae4af');
-  ctx.fillStyle = '#7ef1ca';
+  drawRoundRect(ctx, 710, 104, 240, 66, 20, style === 'minimal' ? '#0b1824' : 'rgba(255,255,255,.05)', theme.chipStroke);
+  ctx.fillStyle = style === 'minimal' ? '#ffffff' : theme.accentC;
   ctx.font = 'bold 20px Arial';
-  ctx.fillText('YOUR CUSTOM LABEL', canvas.width/2, 970);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 52px Arial';
-  wrapText(ctx, cleanLabel, canvas.width/2, 1045, 620, 58, 2);
+  ctx.fillText(getMarkerStyleLabel(style).toUpperCase(), 830, 145);
 
-  ctx.fillStyle = '#5d716b';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = theme.titleColor;
+  ctx.font = 'bold 52px Arial';
+  ctx.fillText('Premium AR Marker', 115, 262);
+  ctx.fillStyle = theme.subtitleColor;
+  ctx.font = '26px Arial';
+  ctx.fillText('Personalized visual marker with stable AR tracking core', 115, 306);
+
+  drawRoundRect(ctx, 135, 350, 810, 760, 34, '#ffffff', theme.accentA);
+  drawRoundRect(ctx, 160, 375, 760, 710, 28, theme.innerBg, theme.innerStroke);
+  drawStyleExtras(ctx, style);
+
+  ctx.drawImage(baseImg, 222, 435, 636, 636);
+  drawRoundRect(ctx, 335, 934, 410, 78, 18, theme.chipFill, theme.chipStroke);
+  ctx.fillStyle = theme.textColor;
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 34px Arial';
+  wrapText(ctx, cleanLabel, 540, 979, 370, 34, 2);
+
+  ctx.strokeStyle = theme.accentA;
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(185, 430); ctx.lineTo(185, 390); ctx.lineTo(225, 390);
+  ctx.moveTo(855, 430); ctx.lineTo(855, 390); ctx.lineTo(815, 390);
+  ctx.moveTo(185, 1030); ctx.lineTo(185, 1070); ctx.lineTo(225, 1070);
+  ctx.moveTo(855, 1030); ctx.lineTo(855, 1070); ctx.lineTo(815, 1070);
+  ctx.stroke();
+
+  const panel = ctx.createLinearGradient(135, 1150, 945, 1370);
+  panel.addColorStop(0, theme.panelFillA);
+  panel.addColorStop(1, theme.panelFillB);
+  drawRoundRect(ctx, 135, 1150, 810, 210, 30, panel, theme.frameStroke);
+  ctx.fillStyle = style === 'minimal' ? theme.accentB : theme.accentA;
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 22px Arial';
+  ctx.fillText('VISIBLE LABEL', 540, 1202);
+
+  const pill = ctx.createLinearGradient(240, 1230, 840, 1308);
+  pill.addColorStop(0, theme.accentA);
+  pill.addColorStop(0.55, theme.accentB);
+  pill.addColorStop(1, theme.accentC);
+  drawRoundRect(ctx, 205, 1226, 670, 88, 28, pill, null);
+  ctx.fillStyle = style === 'minimal' ? '#ffffff' : '#04101a';
+  if(style === 'gold') ctx.fillStyle = '#3a2600';
+  if(style === 'cyber') ctx.fillStyle = '#0a0714';
+  ctx.font = 'bold 48px Arial';
+  wrapText(ctx, cleanLabel, 540, 1285, 600, 52, 2);
+
+  ctx.fillStyle = theme.footerText;
   ctx.font = '22px Arial';
-  ctx.fillText('Optimized AR core + custom visible label', canvas.width/2, 1158);
+  wrapText(ctx, `Style: ${getMarkerStyleLabel(style)} · The visible label uses your selected color.`, 540, 1348, 680, 28, 2);
+
+  ctx.fillStyle = theme.footerSmall;
+  ctx.font = '20px Arial';
+  ctx.fillText('Scan the QR and point the camera to this premium custom marker.', 540, 1412);
 
   return canvas.toDataURL('image/png');
 }
 
 function getMarkerConfig(){
-  const label = sanitizeMarkerLabel(markerTextInput ? markerTextInput.value : 'EAGR Learning');
-  return { mode:'custom', label, image:null, patt:'./assets/hiro-marker-generic.patt' };
+  const label = sanitizeMarkerLabel(markerTextInput ? markerTextInput.value : 'EAGR Learn');
+  const textColor = markerTextColorInput ? markerTextColorInput.value : '#0b1824';
+  const visualStyle = markerVisualStyleInput ? markerVisualStyleInput.value : 'neon';
+  return { mode:'custom', label, image:null, patt:'./assets/hiro-marker-generic.patt', textColor, visualStyle };
 }
 
 async function refreshMarkerSelectionUI(){
   const cfg = getMarkerConfig();
-  const customDataUrl = await createCustomMarkerDataUrl(cfg.label);
+  const customDataUrl = await createCustomMarkerDataUrl(cfg.label, cfg.textColor, cfg.visualStyle);
   cfg.image = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.src = customDataUrl;
   if(selectedMarkerPreview) selectedMarkerPreview.alt = `Custom Marker ${cfg.label}`;
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}.`;
-  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label}`;
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}. Style: ${getMarkerStyleLabel(cfg.visualStyle)}. Color: ${cfg.textColor.toUpperCase()}.`; 
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label} · ${getMarkerStyleLabel(cfg.visualStyle)}`;
   if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
-  if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
-  if(downloadMarkerPngBtnSecondary){ downloadMarkerPngBtnSecondary.href = customDataUrl; downloadMarkerPngBtnSecondary.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
+  if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
+  if(downloadMarkerPngBtnSecondary){ downloadMarkerPngBtnSecondary.href = customDataUrl; downloadMarkerPngBtnSecondary.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}-${cfg.visualStyle}.png`; }
   return cfg;
 }
 
@@ -367,12 +509,12 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1600;
-  canvas.height=1800;
+  canvas.height=1940;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff',theme.accent);
+  drawRoundRect(ctx,60,60,1480,1820,44,'#ffffff',theme.accent);
   if(style==='inter') drawPremiumHeaderBars(ctx, 110, 94, 1380, theme);
 
   ctx.fillStyle = theme.accent;
@@ -389,29 +531,29 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.font='28px Arial';
   ctx.fillText('Image · Video · YouTube · PDF · Link',800,335);
 
-  drawRoundRect(ctx,170,380,1260,1230,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
+  drawRoundRect(ctx,170,380,1260,1270,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
   ctx.drawImage(qr,200,410,1200,1200);
   drawRoundRect(ctx,650,860,300,300,22,'#ffffff','#d7e5e0');
   ctx.drawImage(marker,670,880,260,260);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 25px Arial';
-  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1355);
+  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1400);
 
   ctx.fillStyle = '#85714D';
   ctx.font='bold 24px Arial';
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1408);
+  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1450);
 
   if(descriptionText){
     ctx.fillStyle = theme.text;
     ctx.font='24px Arial';
-    wrapText(ctx,descriptionText,800,1458,1040,30,3);
+    wrapText(ctx,descriptionText,800,1500,1040,30,3);
   }
 
-  drawRoundRect(ctx,210,1560,1180,120,28,'#FFF4CC',theme.accent2);
+  drawRoundRect(ctx,210,1650,1180,140,28,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
-  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1605,1040,30,3);
+  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1705,1040,30,3);
   return canvas.toDataURL('image/png');
 }
 
@@ -489,7 +631,7 @@ async function generate(){
   resultUrl.value = arUrl;
   openBtn.href = arUrl;
   openBtn.classList.remove('disabled');
-  setStatus(`Creando imágenes con el Marker personalizado ${markerCfg.label}...`, 'warn');
+  setStatus(`Creando imágenes con el Marker personalizado ${markerCfg.label} (${getMarkerStyleLabel(markerCfg.visualStyle)})...`, 'warn');
 
   try{
     const integratedQr = await createQrDataUrl(arUrl, style, false);
@@ -502,14 +644,14 @@ async function generate(){
     separatedPreview.innerHTML = `<img src="${separated}" alt="Versión separada">`;
 
     downloadIntegratedBtn.href = integrated;
-    downloadIntegratedBtn.download = `QR_Marker_Integrado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${type}_${style}.png`;
+    downloadIntegratedBtn.download = `QR_Marker_Integrado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${markerCfg.visualStyle}_${type}_${style}.png`;
     downloadIntegratedBtn.classList.remove('disabled');
 
     downloadSeparatedBtn.href = separated;
-    downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${type}_${style}.png`;
+    downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${markerCfg.visualStyle}_${type}_${style}.png`;
     downloadSeparatedBtn.classList.remove('disabled');
 
-    setStatus(`Listo. El Marker personalizado es ${markerCfg.label}.`, 'ok');
+    setStatus(`Listo. El Marker personalizado es ${markerCfg.label} con estilo ${getMarkerStyleLabel(markerCfg.visualStyle)}.`, 'ok');
   }catch(e){
     console.error(e);
     integratedPreview.innerHTML = '<p>No se pudo crear la versión integrada.</p>';
@@ -523,6 +665,14 @@ baseUrlInput.value = currentBaseUrl();
 if(markerTextInput){
   markerTextInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); });
   markerTextInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
+}
+if(markerTextColorInput){
+  markerTextColorInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); });
+  markerTextColorInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
+}
+if(markerVisualStyleInput){
+  markerVisualStyleInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); });
+  markerVisualStyleInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
 }
 refreshMarkerSelectionUI().catch(console.error);
 testBtn.addEventListener('click', testContent);
