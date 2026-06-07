@@ -3,7 +3,8 @@ const mediaUrl = params.get('data') || params.get('u') || '';
 const type = params.get('type') || params.get('t') || 'link';
 const title = params.get('title') || params.get('n') || 'Contenido AR';
 const description = params.get('description') || params.get('x') || '';
-const markerMode = params.get('m') || 'intersg';
+const markerMode = params.get('m') || 'custom';
+const customMarkerLabel = params.get('ml') || 'CUSTOM MARKER';
 
 const pageTitle = document.getElementById('pageTitle');
 const contentTitle = document.getElementById('contentTitle');
@@ -30,13 +31,14 @@ let markerDetected = false;
 let videoElement = null;
 
 function getMarkerLabel(){
+  if(markerMode === 'custom') return customMarkerLabel;
   if(markerMode === 'hiro') return 'HIRO';
   if(markerMode === 'inter') return 'INTER';
   return 'INTER SG';
 }
 
 const markerLabel = getMarkerLabel();
-const activeMarker = markerMode === 'hiro' ? hiroMarker : (markerMode === 'inter' ? interMarker : interSgMarker);
+const activeMarker = markerMode === 'custom' ? hiroMarker : (markerMode === 'hiro' ? hiroMarker : (markerMode === 'inter' ? interMarker : interSgMarker));
 [interSgMarker, interMarker, hiroMarker].forEach(m => {
   if(m && m !== activeMarker) m.setAttribute('visible', 'false');
 });

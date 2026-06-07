@@ -1,6 +1,6 @@
 const $ = id => document.getElementById(id);
 const contentTypeInput = $('contentType');
-const markerTypeInput = $('markerType');
+const markerTextInput = $('markerText');
 const contentUrlInput = $('contentUrl');
 const titleInput = $('title');
 const descriptionInput = $('description');
@@ -24,10 +24,12 @@ const downloadIntegratedBtn = $('downloadIntegratedBtn');
 const downloadSeparatedBtn = $('downloadSeparatedBtn');
 const openBtn = $('openBtn');
 const qrRenderHost = $('qrRenderHost');
-const markerPickerCards = document.querySelectorAll('.marker-picker-card');
 const selectedMarkerPreview = $('selectedMarkerPreview');
 const selectedMarkerCaption = $('selectedMarkerCaption');
 const selectedMarkerStatus = $('selectedMarkerStatus');
+const downloadMarkerPngBtn = $('downloadMarkerPngBtn');
+const downloadMarkerPngBtnSecondary = $('downloadMarkerPngBtnSecondary');
+const downloadMarkerPreview = $('downloadMarkerPreview');
 
 function setStatus(message, type='ok'){
   statusBox.textContent = message;
@@ -39,22 +41,62 @@ function currentBaseUrl(){
   return c.substring(0, c.lastIndexOf('/') + 1);
 }
 
-function getMarkerConfig(){
-  const mode = markerTypeInput ? markerTypeInput.value : 'intersg';
-  if(mode === 'hiro') return { mode:'hiro', label:'HIRO', image:'./assets/hiro-marker-generic.png' };
-  if(mode === 'inter') return { mode:'inter', label:'INTER', image:'./assets/inter-marker-generic.png' };
-  return { mode:'intersg', label:'INTER SG', image:'./assets/inter-sg-marker.png' };
+function sanitizeMarkerLabel(raw){
+  return (raw || 'EAGR Learning').trim().replace(/\s+/g,' ').toUpperCase().slice(0,20) || 'EAGR LEARNING';
 }
 
-function refreshMarkerSelectionUI(){
+async function createCustomMarkerDataUrl(label){
+  const cleanLabel = sanitizeMarkerLabel(label);
+  const baseImg = await loadImage('./assets/hiro-marker-generic.png');
+  const canvas = document.createElement('canvas');
+  canvas.width = 900;
+  canvas.height = 1220;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  drawRoundRect(ctx, 70, 36, 760, 110, 28, '#07111b', '#2ae4af');
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 30px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('SMART CUSTOM MARKER', canvas.width/2, 92);
+
+  drawRoundRect(ctx, 105, 180, 690, 690, 28, '#ffffff', '#d7e5e0');
+  ctx.drawImage(baseImg, 125, 200, 650, 650);
+
+  drawRoundRect(ctx, 100, 920, 700, 180, 28, '#0d1824', '#2ae4af');
+  ctx.fillStyle = '#7ef1ca';
+  ctx.font = 'bold 20px Arial';
+  ctx.fillText('YOUR CUSTOM LABEL', canvas.width/2, 970);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 52px Arial';
+  wrapText(ctx, cleanLabel, canvas.width/2, 1045, 620, 58, 2);
+
+  ctx.fillStyle = '#5d716b';
+  ctx.font = '22px Arial';
+  ctx.fillText('Optimized AR core + custom visible label', canvas.width/2, 1158);
+
+  return canvas.toDataURL('image/png');
+}
+
+function getMarkerConfig(){
+  const label = sanitizeMarkerLabel(markerTextInput ? markerTextInput.value : 'EAGR Learning');
+  return { mode:'custom', label, image:null, patt:'./assets/hiro-marker-generic.patt' };
+}
+
+async function refreshMarkerSelectionUI(){
   const cfg = getMarkerConfig();
-  markerPickerCards.forEach(card => {
-    card.classList.toggle('selected', card.dataset.marker === cfg.mode);
-  });
-  if(selectedMarkerPreview) selectedMarkerPreview.src = cfg.image;
-  if(selectedMarkerPreview) selectedMarkerPreview.alt = `Vista previa del Marker ${cfg.label}`;
-  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Selected Marker: ${cfg.label}.`;
-  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Live Selected: ${cfg.label}`;
+  const customDataUrl = await createCustomMarkerDataUrl(cfg.label);
+  cfg.image = customDataUrl;
+  if(selectedMarkerPreview) selectedMarkerPreview.src = customDataUrl;
+  if(selectedMarkerPreview) selectedMarkerPreview.alt = `Custom Marker ${cfg.label}`;
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}.`;
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label}`;
+  if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
+  if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `custom-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
+  if(downloadMarkerPngBtnSecondary){ downloadMarkerPngBtnSecondary.href = customDataUrl; downloadMarkerPngBtnSecondary.download = `custom-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
+  return cfg;
 }
 
 function extractYoutubeId(url){
@@ -102,7 +144,8 @@ function buildArUrl(){
   const params = new URLSearchParams();
   params.set('t', type);
   params.set('u', finalUrl);
-  params.set('m', markerCfg.mode);
+  params.set('m', 'custom');
+  params.set('ml', markerCfg.label);
   if(title) params.set('n', title);
   if(description) params.set('x', description);
   return `${base}v.html?${params.toString()}`;
@@ -336,7 +379,7 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.font='bold 58px Arial';
   ctx.textAlign='center';
   ctx.fillText('AR',800,170);
-  if(style==='inter') drawInterRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
+  if(style==='inter') drawInterRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.label);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 40px Arial';
@@ -391,7 +434,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.textAlign='left';
   ctx.fillText('AR',110,170);
 
-  if(style==='inter') drawInterRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
+  if(style==='inter') drawInterRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.label);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 34px Arial';
@@ -441,12 +484,12 @@ async function generate(){
 
   const type = detectType(contentUrlInput.value.trim());
   const style = qrStyleInput.value;
-  const markerCfg = getMarkerConfig();
+  const markerCfg = await refreshMarkerSelectionUI();
 
   resultUrl.value = arUrl;
   openBtn.href = arUrl;
   openBtn.classList.remove('disabled');
-  setStatus(`Creando imágenes con Marker ${markerCfg.label}...`, 'warn');
+  setStatus(`Creando imágenes con el Marker personalizado ${markerCfg.label}...`, 'warn');
 
   try{
     const integratedQr = await createQrDataUrl(arUrl, style, false);
@@ -459,14 +502,14 @@ async function generate(){
     separatedPreview.innerHTML = `<img src="${separated}" alt="Versión separada">`;
 
     downloadIntegratedBtn.href = integrated;
-    downloadIntegratedBtn.download = `QR_Marker_Integrado_${markerCfg.mode}_${type}_${style}.png`;
+    downloadIntegratedBtn.download = `QR_Marker_Integrado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${type}_${style}.png`;
     downloadIntegratedBtn.classList.remove('disabled');
 
     downloadSeparatedBtn.href = separated;
-    downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.mode}_${type}_${style}.png`;
+    downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${type}_${style}.png`;
     downloadSeparatedBtn.classList.remove('disabled');
 
-    setStatus(`Listo. El Marker seleccionado es ${markerCfg.label}.`, 'ok');
+    setStatus(`Listo. El Marker personalizado es ${markerCfg.label}.`, 'ok');
   }catch(e){
     console.error(e);
     integratedPreview.innerHTML = '<p>No se pudo crear la versión integrada.</p>';
@@ -477,23 +520,11 @@ async function generate(){
 
 
 baseUrlInput.value = currentBaseUrl();
-markerTypeInput.addEventListener('change', refreshMarkerSelectionUI);
-markerPickerCards.forEach(card => {
-  card.tabIndex = 0;
-  card.setAttribute('role','button');
-  card.addEventListener('click', () => {
-    markerTypeInput.value = card.dataset.marker;
-    refreshMarkerSelectionUI();
-  });
-  card.addEventListener('keydown', (event) => {
-    if(event.key === 'Enter' || event.key === ' '){
-      event.preventDefault();
-      markerTypeInput.value = card.dataset.marker;
-      refreshMarkerSelectionUI();
-    }
-  });
-});
-refreshMarkerSelectionUI();
+if(markerTextInput){
+  markerTextInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); });
+  markerTextInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
+}
+refreshMarkerSelectionUI().catch(console.error);
 testBtn.addEventListener('click', testContent);
 generateBtn.addEventListener('click', generate);
 

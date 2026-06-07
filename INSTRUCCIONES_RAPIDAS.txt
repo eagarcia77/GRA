@@ -1,3 +1,5 @@
+EAGR Learning
+
 FUTURE AR STUDIO – COMMERCIAL EDITION
 
 GUÍA RÁPIDA – GENERADOR UNIVERSAL AR
@@ -39,3 +41,9 @@ Actualización 3D: las imágenes ahora se muestran con un efecto visual más fut
 
 
 Esta edición añade una interfaz comercial, visuales futuristas y un enfoque premium del producto.
+
+
+Nueva función: ahora el usuario solo escribe el texto deseado en Marker Text y el sistema genera automáticamente un Marker visual personalizado en PNG, manteniendo un patrón PATT optimizado para detección AR.
+
+
+Actualización premium del Marker: el Marker personalizado ahora usa un diseño más elegante, comercial y futurista, manteniendo un núcleo optimizado para la detección AR.
