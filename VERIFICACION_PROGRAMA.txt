@@ -1,45 +1,35 @@
-EAGR Learning
+EAGR Learn – Future AR Studio (Commercial Edition)
 
-FUTURE AR STUDIO – COMMERCIAL EDITION
+This commercial edition lets users create premium AR experiences using direct URLs for images, videos, YouTube, PDF files and web links.
 
-VERIFICACIÓN REALIZADA
+Main features:
+- Premium custom marker builder
+- QR generation in multiple visual styles
+- Integrated and separated export modes
+- 3D visual mode for images
+- GitHub Pages ready package
+- Generic web workflow with no institutional dependency
 
-1. Se corrigió el cambio de Marker.
-2. Se crearon tres archivos de Marker:
-   - assets/inter-sg-marker.png + .patt
-   - assets/inter-marker-generic.png + .patt
-   - assets/hiro-marker-generic.png + .patt
-3. Se actualizó el visor AR para usar el Marker seleccionado.
-4. Se actualizó el generador para dibujar el Marker correcto.
-5. Se añadió `markers.html`.
-6. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
+How the custom marker works:
+- The user writes any text in Marker Text.
+- The app generates a premium marker PNG that includes the custom visible label.
+- A stable core marker pattern is used behind that visual design so AR tracking remains reliable.
+- The Core PATT file is available for download when needed.
 
-
-NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.
-
-
-Descarga individual de Markers: ahora puede descargar INTER SG, INTER y HIRO por separado, tanto en PNG como en PATT.
-
-
-Nueva función: ahora el usuario puede previsualizar el Marker grande y escogerlo visualmente antes de generar.
-
-
-Mejora visual: ahora el Marker seleccionado resalta con borde verde, insignia de seleccionado y estilo más moderno.
-
-
-Versión premium: ahora incluye tarjetas premium con iconos y animación suave al seleccionar el Marker.
+Recommended workflow:
+1. Select the content type.
+2. Paste a direct public URL.
+3. Write the marker text.
+4. Test the content.
+5. Generate assets.
+6. Download the integrated or separated visual.
+7. Open the AR link and scan the QR.
+8. Point the camera to the premium custom marker.
 
 
-Encabezado institucional actualizado: Universidad Interamericana de Puerto Rico Recinto de San Germán.
-
-
-Actualización 3D: las imágenes ahora se muestran con un efecto visual más futurista, flotante y con apariencia 3D dentro de la experiencia de Realidad Aumentada.
-
-
-Esta edición añade una interfaz comercial, visuales futuristas y un enfoque premium del producto.
-
-
-Nueva función: ahora el usuario solo escribe el texto deseado en Marker Text y el sistema genera automáticamente un Marker visual personalizado en PNG, manteniendo un patrón PATT optimizado para detección AR.
-
-
-Actualización premium del Marker: el Marker personalizado ahora usa un diseño más elegante, comercial y futurista, manteniendo un núcleo optimizado para la detección AR.
+Verified items:
+- HTML pages present
+- CSS present
+- JS syntax verified
+- Core marker pattern present
+- Premium custom marker generation present

@@ -1,111 +1,40 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Future AR Studio | Diagnostics</title>
+  <title>EAGR Learn | Content Diagnostics</title>
   <link rel="stylesheet" href="./css/app.css"/>
 </head>
 <body>
   <main class="container">
     <section class="card">
-      <h1>Diagnóstico de contenido Blackboard</h1>
-      <p>Use esta página para probar Image, Video, YouTube, PDF document o Web link antes de generar el QR.</p>
-      <label for="contentType">Tipo</label>
-      <select id="contentType">
-        <option value="image">Imagen</option>
-        <option value="video">Video directo MP4/WebM</option>
-        <option value="youtube">YouTube</option>
-        <option value="pdf">PDF document</option>
-        <option value="link">Web link</option>
-      </select>
-      <label for="url">URL</label>
-      <input id="url" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.pdf"/>
-      <div class="actions">
-        <button id="test">Probar</button>
-        <a id="open" href="#" target="_blank" rel="noopener" class="button-link">Abrir en pestaña nueva</a>
+      <h1>Content Diagnostics</h1>
+      <p>Use this page to test whether a direct URL is reachable from the web.</p>
+      <label for="url">Direct URL</label>
+      <input id="url" type="url" placeholder="https://example.com/assets/file.pdf"/>
+      <div class="actions" style="margin-top:14px;">
+        <button id="testBtn" class="primary">Test URL</button>
       </div>
-      <div id="result" class="status"></div>
-      <div id="preview" class="preview-wrap"></div>
+      <pre id="result" style="white-space:pre-wrap;background:rgba(255,255,255,.06);padding:16px;border-radius:16px;margin-top:18px;"></pre>
     </section>
   </main>
   <script>
-    const type=document.getElementById('contentType'), url=document.getElementById('url'), test=document.getElementById('test'), openBtn=document.getElementById('open'), result=document.getElementById('result'), preview=document.getElementById('preview');
-
-    function ytId(raw){
-      raw = (raw || '').trim();
+    const btn = document.getElementById('testBtn');
+    const input = document.getElementById('url');
+    const result = document.getElementById('result');
+    btn.addEventListener('click', async () => {
+      const url = input.value.trim();
+      if(!url){ result.textContent = 'Please enter a URL.'; return; }
+      result.textContent = 'Testing...';
       try {
-        const u = new URL(raw);
-        const host = u.hostname.replace(/^www\./,'').toLowerCase();
-        if(host === 'youtu.be') return u.pathname.split('/').filter(Boolean)[0] || '';
-        if(host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com'){
-          if(u.pathname === '/watch') return u.searchParams.get('v') || '';
-          if(u.pathname.startsWith('/embed/')) return u.pathname.split('/')[2] || '';
-          if(u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2] || '';
-          if(u.pathname.startsWith('/live/')) return u.pathname.split('/')[2] || '';
-        }
-      } catch(e) {}
-      const m = raw.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{6,})/);
-      return m ? m[1] : '';
-    }
-
-    test.addEventListener('click',()=>{
-      const u=url.value.trim();
-      preview.innerHTML='';
-      openBtn.href=u||'#';
-      if(!u){result.textContent='Escriba un URL.';result.className='status error';return;}
-      const t=type.value;
-
-      if(t==='image'){
-        const img=document.createElement('img');
-        img.src=u;
-        img.className='preview';
-        img.onload=()=>{result.textContent='Imagen cargó correctamente.';result.className='status ok'};
-        img.onerror=()=>{result.textContent='La imagen no cargó. Revise permisos.';result.className='status warn'};
-        preview.appendChild(img);
-        return;
+        const r = await fetch(url, { method:'GET' });
+        result.textContent = `Status: ${r.status} ${r.statusText}
+Content-Type: ${r.headers.get('content-type') || 'unknown'}
+Final URL: ${r.url}`;
+      } catch (err) {
+        result.textContent = 'Error: ' + err.message;
       }
-
-      if(t==='video'){
-        const v=document.createElement('video');
-        v.src=u;
-        v.controls=true;
-        v.muted=true;
-        v.playsInline=true;
-        v.className='preview';
-        v.onloadedmetadata=()=>{result.textContent='Video cargó correctamente.';result.className='status ok'};
-        v.onerror=()=>{result.textContent='El video no cargó. Revise permisos/formato.';result.className='status warn'};
-        preview.appendChild(v);
-        return;
-      }
-
-      if(t==='youtube'){
-        const id=ytId(u);
-        if(!id){
-          result.textContent='No se detectó el ID de YouTube.';
-          result.className='status error';
-          return;
-        }
-        const watchUrl = `https://www.youtube.com/watch?v=${id}`;
-        openBtn.href = watchUrl;
-        const img=document.createElement('img');
-        img.src=`https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-        img.className='preview';
-        preview.appendChild(img);
-        const p=document.createElement('p');
-        p.innerHTML = `YouTube detectado. <a href="${watchUrl}" target="_blank" rel="noopener">Abrir video en YouTube</a>`;
-        preview.appendChild(p);
-        result.textContent='YouTube detectado correctamente.';
-        result.className='status ok';
-        return;
-      }
-
-      const iframe=document.createElement('iframe');
-      iframe.src=u;
-      iframe.className='preview-frame';
-      preview.appendChild(iframe);
-      result.textContent='Vista previa cargada. Si no se ve, use Abrir en pestaña nueva.';
-      result.className='status warn';
     });
   </script>
 </body>

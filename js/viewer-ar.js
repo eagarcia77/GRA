@@ -19,8 +19,6 @@ const manualShowBtn = document.getElementById('manualShowBtn');
 const overlayMarkerLabel = document.getElementById('overlayMarkerLabel');
 const playVideoBtn = document.getElementById('playVideoBtn');
 const youtubeBtn = document.getElementById('youtubeBtn');
-const interSgMarker = document.getElementById('interSgMarker');
-const interMarker = document.getElementById('interMarker');
 const hiroMarker = document.getElementById('hiroMarker');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
@@ -32,14 +30,12 @@ let videoElement = null;
 
 function getMarkerLabel(){
   if(markerMode === 'custom') return customMarkerLabel;
-  if(markerMode === 'hiro') return 'HIRO';
-  if(markerMode === 'inter') return 'INTER';
-  return 'INTER SG';
+  return 'CORE MARKER';
 }
 
 const markerLabel = getMarkerLabel();
-const activeMarker = markerMode === 'custom' ? hiroMarker : (markerMode === 'hiro' ? hiroMarker : (markerMode === 'inter' ? interMarker : interSgMarker));
-[interSgMarker, interMarker, hiroMarker].forEach(m => {
+const activeMarker = hiroMarker;
+[hiroMarker].forEach(m => {
   if(m && m !== activeMarker) m.setAttribute('visible', 'false');
 });
 
@@ -47,7 +43,7 @@ pageTitle.textContent = title;
 contentTitle.textContent = title;
 contentDescription.textContent = description;
 openContentBtn.href = mediaUrl || '#';
-if(overlayMarkerLabel) overlayMarkerLabel.textContent = `Apunta al Marker ${markerLabel}.`;
+if(overlayMarkerLabel) overlayMarkerLabel.textContent = `Point to the marker: ${markerLabel}.`; 
 actionText.textContent = `Buscando Marker ${markerLabel}...`;
 
 function configurePresentationMode(){
@@ -79,7 +75,7 @@ function showContent(){
   if(type === 'youtube'){
     showAction('YouTube listo. Toca Abrir video en YouTube.');
   } else if(type === 'image'){
-    showAction('Imagen 3D visible con efecto futurista. Usa + y − o pellizca con dos dedos.');
+    showAction('3D image visible with a futuristic effect. Use + and − or pinch with two fingers.');
   } else if(type === 'link'){
     showAction('Página web lista. Toca Abrir página web.');
   } else {
@@ -184,7 +180,7 @@ function buildContent(){
     mediaBody.appendChild(iframe);
 
     const note = document.createElement('p');
-    note.textContent = 'Si el PDF no aparece aquí, presiona Abrir contenido. Blackboard puede requerir login o bloquear vista embebida.';
+    note.textContent = 'If the PDF does not appear here, press Open Content. Some websites or files may block embedded display.';
     note.style.fontSize = '.9rem';
     note.style.color = '#5d716b';
     mediaBody.appendChild(note);

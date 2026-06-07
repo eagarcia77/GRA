@@ -42,7 +42,7 @@ function currentBaseUrl(){
 }
 
 function sanitizeMarkerLabel(raw){
-  return (raw || 'EAGR Learning').trim().replace(/\s+/g,' ').toUpperCase().slice(0,20) || 'EAGR LEARNING';
+  return (raw || 'EAGR Learn').trim().replace(/\s+/g,' ').toUpperCase().slice(0,20) || 'EAGR LEARNING';
 }
 
 async function createCustomMarkerDataUrl(label){
@@ -94,8 +94,8 @@ async function refreshMarkerSelectionUI(){
   if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Custom Marker text: ${cfg.label}.`;
   if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Ready: ${cfg.label}`;
   if(downloadMarkerPreview) downloadMarkerPreview.src = customDataUrl;
-  if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `custom-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
-  if(downloadMarkerPngBtnSecondary){ downloadMarkerPngBtnSecondary.href = customDataUrl; downloadMarkerPngBtnSecondary.download = `custom-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
+  if(downloadMarkerPngBtn){ downloadMarkerPngBtn.href = customDataUrl; downloadMarkerPngBtn.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
+  if(downloadMarkerPngBtnSecondary){ downloadMarkerPngBtnSecondary.href = customDataUrl; downloadMarkerPngBtnSecondary.download = `premium-marker-${cfg.label.replace(/[^A-Z0-9]+/g,'-')}.png`; }
   return cfg;
 }
 
@@ -214,7 +214,7 @@ function testContent(){
 
   documentPreview.src = url;
   documentPreview.classList.remove('hidden');
-  setStatus('Vista previa cargada. Si Blackboard bloquea el PDF/enlace, use Abrir en pestaña nueva.', 'warn');
+  setStatus('Live preview loaded. If a page or file blocks embedding, use Open in New Tab.', 'warn');
 }
 
 function loadImage(src){
@@ -303,14 +303,14 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
 }
 
 function getTheme(style){
-  if(style==='inter') return {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#44605a', bg:'#ffffff', chip:'#eef7f3', stripe:'#007B5F'};
+  if(style==='inter') return {accent:'#2ae4af', accent2:'#ffd86b', text:'#0b1824', sub:'#44605a', bg:'#ffffff', chip:'#eef7f3', stripe:'#2ae4af'};
   if(style==='tiger') return {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#fff6d8', stripe:'#1e1e1e'};
   return style==='modern'
     ? {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#eef7f3', stripe:'#1e1e1e'}
     : {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#f4f4f4', stripe:'#1e1e1e'};
 }
 
-function drawInterRibbon(ctx, x, y, w, h, theme, text='INTER SAN GERMÁN'){
+function drawPremiumRibbon(ctx, x, y, w, h, theme, text='BRAND'){
   drawRoundRect(ctx, x, y, w, h, 16, theme.accent, null);
   drawRoundRect(ctx, x+8, y+8, w-16, h-16, 12, '#ffffff', null);
   drawRoundRect(ctx, x+18, y+16, 26, h-32, 8, theme.accent2, null);
@@ -321,7 +321,7 @@ function drawInterRibbon(ctx, x, y, w, h, theme, text='INTER SAN GERMÁN'){
   ctx.fillText(text, x + w/2, y + h/2 + 8);
 }
 
-function drawInterHeaderBars(ctx, x, y, w, theme){
+function drawPremiumHeaderBars(ctx, x, y, w, theme){
   drawRoundRect(ctx, x, y, w, 16, 8, theme.accent, null);
   drawRoundRect(ctx, x, y+22, w*0.72, 10, 5, theme.accent2, null);
 }
@@ -358,7 +358,7 @@ function drawTigerBanner(ctx, x, y, w, h, theme){
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
   ctx.textAlign='center';
-  ctx.fillText('TIGER STYLE – INTER SG', x + w/2, y + h/2 + 8);
+  ctx.fillText('TIGER TECH STYLE', x + w/2, y + h/2 + 8);
 }
 
 async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentType,style,markerCfg){
@@ -373,13 +373,13 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
   drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff',theme.accent);
-  if(style==='inter') drawInterHeaderBars(ctx, 110, 94, 1380, theme);
+  if(style==='inter') drawPremiumHeaderBars(ctx, 110, 94, 1380, theme);
 
   ctx.fillStyle = theme.accent;
   ctx.font='bold 58px Arial';
   ctx.textAlign='center';
   ctx.fillText('AR',800,170);
-  if(style==='inter') drawInterRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.label);
+  if(style==='inter') drawPremiumRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.label);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 40px Arial';
@@ -427,14 +427,14 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
   drawRoundRect(ctx,60,60,1680,1330,40,'#ffffff',theme.accent);
-  if(style==='inter') drawInterHeaderBars(ctx, 95, 92, 1610, theme);
+  if(style==='inter') drawPremiumHeaderBars(ctx, 95, 92, 1610, theme);
 
   ctx.fillStyle = theme.accent;
   ctx.font='bold 54px Arial';
   ctx.textAlign='left';
   ctx.fillText('AR',110,170);
 
-  if(style==='inter') drawInterRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.label);
+  if(style==='inter') drawPremiumRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.label);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 34px Arial';

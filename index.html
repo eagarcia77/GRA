@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EAGR Learning | Future AR Studio</title>
+  <title>EAGR Learn | Future AR Studio</title>
   <link rel="stylesheet" href="./css/app.css"/>
 </head>
 <body>
   <main class="container">
     <section class="hero card commercial-hero">
       <div class="hero-badge">Commercial Edition</div>
-      <div class="brand-logo" aria-label="EAGR Learning logo"><span class="brand-main">EAGR</span><span class="brand-sub">Learning</span></div>
+      <img src="./assets/eagr-learn-logo.svg" class="logo-marker logo-wide" alt="EAGR Learn logo"/>
       <div class="hero-copy">
         <p class="hero-kicker">Immersive AR Experience Builder</p>
-        <h1 class="hero-title">EAGR Learning</h1>
-        <p class="institution-subtitle"><strong>Future AR Studio</strong></p>
+        <h1 class="hero-title">EAGR Learn</h1>
+        <p class="institution-subtitle"><strong>Commercial Edition</strong></p>
         <p class="hero-text">Plataforma comercial con visuales futuristas para crear experiencias de <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Incluye <strong>3D visual mode</strong>, <strong>premium QR styles</strong>, generación de <strong>Markers</strong> y exportación de recursos lista para compartir.</p>
         <div class="hero-actions actions">
           <a href="#builder" class="button-link">Launch Builder</a>
@@ -42,7 +42,7 @@
       <article class="stat-card">
         <span class="stat-label">Deployment</span>
         <strong class="stat-value">GitHub + LMS</strong>
-        <p>Compatible con GitHub Pages y con enlaces del Content Collection.</p>
+        <p>Compatible con GitHub Pages, enlaces públicos y recursos web directos.</p>
       </article>
     </section>
 
@@ -67,7 +67,7 @@
         </select>
 
         <label for="markerText">Marker Text</label>
-        <input id="markerText" type="text" maxlength="20" placeholder="Write any text, for example: UCAN, CETL, BIO, TOUR..." value="EAGR Learning"/>
+        <input id="markerText" type="text" maxlength="20" placeholder="Write any text, for example: BRAND, LAB, TOUR, EVENT..." value="EAGR Learn"/>
         <small>Escriba el texto que desee. El sistema lo colocará automáticamente en el Marker para una experiencia más simple y personalizada.</small>
 
         <div class="marker-preview-large simple-marker-panel">
@@ -77,16 +77,16 @@
           </div>
           <h3>Live Marker Preview</h3>
           <img id="selectedMarkerPreview" src="./assets/hiro-marker-generic.png" alt="Selected Marker Preview"/>
-          <div id="selectedMarkerCaption" class="marker-preview-caption">Premium Custom Marker text: EAGR LEARNING.</div>
+          <div id="selectedMarkerCaption" class="marker-preview-caption">Premium Custom Marker text: EAGR LEARN.</div>
           <div class="actions compact-actions">
             <a id="downloadMarkerPngBtn" href="#" download="custom-marker.png" class="button-link">Download Premium Marker PNG</a>
-            <a id="downloadMarkerPattBtn" href="./assets/hiro-marker-generic.patt" download="custom-marker.patt" class="button-link gold">Download Marker PATT</a>
+            <a id="downloadMarkerPattBtn" href="./assets/hiro-marker-generic.patt" download="custom-marker.patt" class="button-link gold">Download Core Pattern PATT</a>
           </div>
         </div>
 
         <label for="contentUrl">Content URL</label>
-        <input id="contentUrl" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.pdf"/>
-        <small>Use un enlace directo. Funciona con Blackboard Content Collection, GitHub Pages y otros recursos públicos compatibles.</small>
+        <input id="contentUrl" type="url" placeholder="https://example.com/assets/your-file.pdf"/>
+        <small>Use un enlace directo y público. Funciona con GitHub Pages y otros recursos web compatibles.</small>
 
         <label for="title">Experience Title</label>
         <input id="title" type="text" placeholder="Logo, video, manual PDF, rúbrica, enlace de apoyo..."/>
@@ -102,8 +102,8 @@
         <select id="qrStyle">
           <option value="classic">Classic</option>
           <option value="modern">Modern (Opción C)</option>
-          <option value="tiger">Tiger Style – INTER SG</option>
-          <option value="inter">Inter Premium – Simple QR</option>
+          <option value="tiger">Tiger Tech Style</option>
+          <option value="inter">EAGR Premium – Simple QR</option>
         </select>
 
         <div class="actions">
@@ -175,7 +175,7 @@
           <img id="downloadMarkerPreview" src="./assets/hiro-marker-generic.png" alt="Custom Marker"/>
           <div class="actions">
             <a id="downloadMarkerPngBtnSecondary" href="#" download="custom-marker.png" class="button-link">Download PNG</a>
-            <a href="./assets/hiro-marker-generic.patt" download="custom-marker.patt" class="button-link gold">Download PATT</a>
+            <a href="./assets/hiro-marker-generic.patt" download="custom-marker.patt" class="button-link gold">Download Core PATT</a>
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@
       <div>
         <p class="footer-kicker">Commercial Concept</p>
         <h2>Designed for modern institutions, creators and immersive projects</h2>
-        <p>Esta edición comercial presenta una interfaz más futurista, un flujo premium de generación y una experiencia visual preparada para venderse como plataforma moderna de Realidad Aumentada.</p>
+        <p>Esta edición comercial presenta una interfaz futurista, un flujo premium de generación y una experiencia visual preparada para venderse como una plataforma moderna de Realidad Aumentada.</p>
       </div>
       <div class="footer-chips">
         <span>Commercial UI</span>

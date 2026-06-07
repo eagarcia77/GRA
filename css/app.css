@@ -223,3 +223,5 @@ code{background:rgba(255,255,255,.07);color:#fff}
 .simple-marker-panel,.custom-marker-download-card{background:linear-gradient(180deg,rgba(12,22,33,.92),rgba(8,15,24,.96));border:1px solid rgba(143,190,222,.18);box-shadow:0 18px 38px rgba(0,0,0,.24)}
 .simple-marker-panel img,.custom-marker-download-card img{border-radius:22px;box-shadow:0 18px 36px rgba(0,0,0,.22),0 0 0 1px rgba(143,190,222,.12)}
 .marker-preview-caption{color:#dff3ff;font-weight:700}
+
+.logo-wide{width:min(260px,100%);height:auto;background:transparent;border:0;box-shadow:none;border-radius:0}

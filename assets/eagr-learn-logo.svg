@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="20" y1="20" x2="300" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2AE4AF"/>
+      <stop offset="0.55" stop-color="#1CB1FF"/>
+      <stop offset="1" stop-color="#FFD86B"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D8E8F3"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="320" rx="40" fill="#07111B"/>
+  <rect x="14" y="14" width="1172" height="292" rx="28" fill="url(#g1)" fill-opacity="0.08" stroke="#20374B" stroke-width="2"/>
+  <g transform="translate(52 48)">
+    <rect x="0" y="0" width="224" height="224" rx="48" fill="#0D1824" stroke="#2AE4AF" stroke-opacity="0.35" stroke-width="3"/>
+    <path d="M112 18L187 60V144L112 186L37 144V60L112 18Z" fill="url(#g1)" fill-opacity="0.18" stroke="url(#g1)" stroke-width="4"/>
+    <path d="M80 85H148" stroke="#2AE4AF" stroke-width="10" stroke-linecap="round"/>
+    <path d="M80 112H138" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round"/>
+    <path d="M80 139H148" stroke="#FFD86B" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="112" cy="112" r="86" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="2"/>
+  </g>
+  <g transform="translate(320 74)">
+    <text x="0" y="88" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" fill="url(#g2)">EAGR Learn</text>
+    <text x="2" y="138" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="4" fill="#7EF1CA">FUTURE AR STUDIO</text>
+    <text x="0" y="184" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#A8BECD">Commercial AR experience builder with premium custom markers, QR assets and 3D-ready visuals.</text>
+  </g>
+</svg>
