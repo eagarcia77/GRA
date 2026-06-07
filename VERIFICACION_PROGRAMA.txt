@@ -1,7 +1,9 @@
-EAGR Learn – Functional Bilingual AR Generator
+EAGR Learn – Functional Bilingual AR Generator / Generador AR funcional bilingüe
 
+ENGLISH
 This version removes unnecessary marker customizations and keeps the standard HIRO marker that matches hiro-marker-generic.patt. This improves AR.js marker detection reliability.
 
+ESPAÑOL
 Esta versión elimina las personalizaciones innecesarias del marcador y mantiene el marcador HIRO estándar que coincide con hiro-marker-generic.patt. Esto mejora la confiabilidad de detección del marcador en AR.js.
 
 Main features / Funciones principales:
