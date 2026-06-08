@@ -26,3 +26,35 @@ Update / Actualización:
 Logo URL, Upload Logo and Logo Preview were removed because they were not functional in this simplified version.
 
 Se eliminó Logo URL, Upload Logo y Logo Preview porque no eran funcionales en esta versión simplificada.
+
+
+EAGR Learn AR – Brand Settings + White Label Verification
+
+Verified / Verificado:
+- Brand Name field is connected to JavaScript.
+- Product Name field is connected to JavaScript.
+- Brand Footer field is connected to JavaScript.
+- Primary Color field is connected to JavaScript.
+- Secondary Color field is connected to JavaScript.
+- White-label mode checkbox is connected to JavaScript.
+- Auto-save checkbox is connected to JavaScript.
+- Save Brand Settings button is connected.
+- Reset Brand button is connected.
+- Apply Brand Preview button is connected.
+- Settings are saved with localStorage.
+- Saved settings are loaded on page load.
+- Generated AR links include brand data:
+  bn = brand name
+  pn = product name
+  bf = brand footer
+  bp = primary color
+  bs = secondary color
+  wl = white-label mode
+- Logo URL and Upload Logo were removed.
+
+Corrections made / Correcciones realizadas:
+- Fixed broken event listener block.
+- Fixed refreshBrandPreview so .catch() calls do not break the page.
+- Added bilingual labels to Brand Settings.
+- Removed remaining logo upload/url references.
+- Verified JavaScript syntax with node --check.

@@ -478,10 +478,10 @@ function saveBrandSettings(showMessage=true){
       whiteLabel: brand.whiteLabel,
       autoSave: brand.autoSave
     }));
-    if(showMessage) setStatus('Brand Settings guardados correctamente.', 'ok');
+    if(showMessage) setStatus('Brand Settings saved. / Ajustes de marca guardados.', 'ok');
   }catch(err){
     console.warn('Could not save brand settings', err);
-    if(showMessage) setStatus('No se pudieron guardar los Brand Settings en este navegador.', 'warn');
+    if(showMessage) setStatus('Brand Settings could not be saved in this browser. / No se pudieron guardar los ajustes en este navegador.', 'warn');
   }
 }
 
@@ -512,7 +512,7 @@ function resetBrandSettings(){
   localStorage.removeItem('eagrBrandSettings');
   refreshBrandPreview().catch(console.error);
   refreshMarkerSelectionUI().catch(console.error);
-  setStatus('Brand Settings restaurados.', 'ok');
+  setStatus('Brand Settings reset. / Ajustes de marca restaurados.', 'ok');
 }
 
 async function loadOptionalBrandLogo(src){
@@ -726,31 +726,93 @@ async function generate(){
 
 
 baseUrlInput.value = currentBaseUrl();
-if(markerTextInput){
-  markerTextInput.addEventListener('input', () => { if(brandNameInput) brandNameInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); refreshBrandPreview().catch(console.error); });
-if(brandProductNameInput) brandProductNameInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); });
-if(brandFooterInput) brandFooterInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); });
-if(brandPrimaryInput) brandPrimaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
-if(brandSecondaryInput) brandSecondaryInput.addEventListener('input', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); });
-if(whiteLabelModeInput) whiteLabelModeInput.addEventListener('change', () => { refreshBrandPreview().catch(console.error); });
-if(autoSaveBrandInput) autoSaveBrandInput.addEventListener('change', () => { refreshBrandPreview().catch(console.error); });
-if(saveBrandBtn) saveBrandBtn.addEventListener('click', () => saveBrandSettings(true));
-if(resetBrandBtn) resetBrandBtn.addEventListener('click', resetBrandSettings);
-if(applyBrandBtn) applyBrandBtn.addEventListener('click', () => { refreshBrandPreview().catch(console.error); refreshMarkerSelectionUI().catch(console.error); setStatus('Brand Preview aplicado.', 'ok'); });
-loadBrandSettings();
-refreshBrandPreview().catch(console.error);
-refreshMarkerSelectionUI().catch(console.error); });
-  markerTextInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
-}
-if(markerTextColorInput){
-  markerTextColorInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); });
-  markerTextColorInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
-}
-if(markerVisualStyleInput){
-  markerVisualStyleInput.addEventListener('input', () => { refreshMarkerSelectionUI().catch(console.error); });
-  markerVisualStyleInput.addEventListener('change', () => { refreshMarkerSelectionUI().catch(console.error); });
-}
-refreshMarkerSelectionUI().catch(console.error);
-testBtn.addEventListener('click', testContent);
-generateBtn.addEventListener('click', generate);
 
+function bindBrandSettingsEvents(){
+  if(brandNameInput){
+    brandNameInput.addEventListener('input', () => {
+      refreshBrandPreview().catch(console.error);
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+  }
+  if(brandProductNameInput){
+    brandProductNameInput.addEventListener('input', () => {
+      refreshBrandPreview().catch(console.error);
+    });
+  }
+  if(brandFooterInput){
+    brandFooterInput.addEventListener('input', () => {
+      refreshBrandPreview().catch(console.error);
+    });
+  }
+  if(brandPrimaryInput){
+    brandPrimaryInput.addEventListener('input', () => {
+      refreshBrandPreview().catch(console.error);
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+  }
+  if(brandSecondaryInput){
+    brandSecondaryInput.addEventListener('input', () => {
+      refreshBrandPreview().catch(console.error);
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+  }
+  if(whiteLabelModeInput){
+    whiteLabelModeInput.addEventListener('change', () => {
+      refreshBrandPreview().catch(console.error);
+    });
+  }
+  if(autoSaveBrandInput){
+    autoSaveBrandInput.addEventListener('change', () => {
+      refreshBrandPreview().catch(console.error);
+    });
+  }
+  if(saveBrandBtn){
+    saveBrandBtn.addEventListener('click', () => saveBrandSettings(true));
+  }
+  if(resetBrandBtn){
+    resetBrandBtn.addEventListener('click', resetBrandSettings);
+  }
+  if(applyBrandBtn){
+    applyBrandBtn.addEventListener('click', () => {
+      refreshBrandPreview().catch(console.error);
+      refreshMarkerSelectionUI().catch(console.error);
+      setStatus('Brand Preview applied. / Vista previa de marca aplicada.', 'ok');
+    });
+  }
+}
+
+function bindMarkerEvents(){
+  if(markerTextInput){
+    markerTextInput.addEventListener('input', () => {
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+    markerTextInput.addEventListener('change', () => {
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+  }
+  if(markerTextColorInput){
+    markerTextColorInput.addEventListener('input', () => {
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+    markerTextColorInput.addEventListener('change', () => {
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+  }
+  if(markerVisualStyleInput){
+    markerVisualStyleInput.addEventListener('input', () => {
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+    markerVisualStyleInput.addEventListener('change', () => {
+      refreshMarkerSelectionUI().catch(console.error);
+    });
+  }
+}
+
+loadBrandSettings();
+bindBrandSettingsEvents();
+bindMarkerEvents();
+refreshBrandPreview().catch(console.error);
+refreshMarkerSelectionUI().catch(console.error);
+
+if(testBtn) testBtn.addEventListener('click', testContent);
+if(generateBtn) generateBtn.addEventListener('click', generate);
