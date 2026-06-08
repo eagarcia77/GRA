@@ -34,6 +34,14 @@ function isModelUrl(url){
   return clean.endsWith('.glb') || clean.endsWith('.gltf');
 }
 
+function validateSecureContext(){
+  if(!window.isSecureContext){
+    setStatus('WebXR requires HTTPS or localhost. / WebXR requiere HTTPS o localhost.', 'error');
+    return false;
+  }
+  return true;
+}
+
 function loadModel(url, source='url'){
   if(!url){
     setStatus('No model URL was provided. / No se proveyó URL de modelo.', 'error');
@@ -81,6 +89,8 @@ localModelInput.addEventListener('change', () => {
   setStatus('Local model loaded for testing. / Modelo local cargado para prueba.', 'ok');
 });
 
+validateSecureContext();
+
 if(navigator.xr && typeof navigator.xr.isSessionSupported === 'function'){
   navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
     if(!supported){
@@ -95,4 +105,6 @@ if(navigator.xr && typeof navigator.xr.isSessionSupported === 'function'){
 
 if(mediaUrl){
   loadModel(mediaUrl, 'url');
+} else {
+  setStatus('Paste a direct GLB/GLTF URL or use Upload to test a local model. / Pegue una URL directa GLB/GLTF o use Upload para probar un modelo local.', 'warn');
 }

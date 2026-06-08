@@ -301,3 +301,15 @@ code{background:rgba(255,255,255,.07);color:#fff}
 .brand-logo-preview-box{
   display:none !important;
 }
+
+/* WebXR Surface Mode warning */
+.webxr-warning{
+  margin:10px 0 14px;
+  padding:13px 15px;
+  border-radius:16px;
+  background:rgba(255,216,107,.12);
+  border:1px solid rgba(255,216,107,.34);
+  color:#ffe7a1;
+  line-height:1.5;
+}
+.webxr-warning strong{color:#ffd86b}

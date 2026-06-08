@@ -218,9 +218,11 @@ function detectType(url){
 
 function getAdvancedArMode(type){
   const selected = advancedArModeInput ? advancedArModeInput.value : 'auto';
-  if(selected === 'webxr') return 'webxr';
+  // WebXR Surface Mode is only functional for GLB/GLTF models.
+  // For images, videos, PDF, YouTube and regular links, the program falls back to Marker AR.
+  if(type !== 'model') return 'marker';
   if(selected === 'marker') return 'marker';
-  return type === 'model' ? 'webxr' : 'marker';
+  return 'webxr';
 }
 
 function buildViewerPath(type, mode){
@@ -306,9 +308,14 @@ function testContent(){
   }
 
   if(type === 'model'){
-    previewOpenBtn.href = url;
+    const mode = getAdvancedArMode(type);
+    const viewerUrl = buildArUrl();
+    previewOpenBtn.href = viewerUrl || url;
     previewWrap.classList.remove('hidden');
-    setStatus('Modelo 3D detectado. Use WebXR Surface Mode para abrirlo con colocación en superficie si el dispositivo lo soporta.', 'ok');
+    setStatus(mode === 'webxr'
+      ? '3D model detected. Open the WebXR Viewer to test markerless mode. / Modelo 3D detectado. Abra el visor WebXR para probar modo sin marcador.'
+      : '3D model detected. Marker mode is selected. / Modelo 3D detectado. Está seleccionado el modo Marker.',
+      'ok');
     return;
   }
 
@@ -683,10 +690,17 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
 }
 
 async function generate(){
+  const type = detectType(contentUrlInput.value.trim());
+  const selectedAdvancedMode = advancedArModeInput ? advancedArModeInput.value : 'auto';
+  if(selectedAdvancedMode === 'webxr' && type !== 'model'){
+    setStatus('WebXR Surface Mode only works with direct GLB/GLTF model URLs. / WebXR Surface Mode solo funciona con URL directas a modelos GLB/GLTF.', 'error');
+    return;
+  }
+
   const arUrl = buildArUrl();
   if(!arUrl){ setStatus('Falta el URL del contenido.', 'error'); return; }
 
-  const type = detectType(contentUrlInput.value.trim());
+
   const style = qrStyleInput.value;
   const markerCfg = await refreshMarkerSelectionUI();
   const brandCfg = await refreshBrandPreview();
@@ -695,7 +709,7 @@ async function generate(){
   resultUrl.value = arUrl;
   openBtn.href = arUrl;
   openBtn.classList.remove('disabled');
-  setStatus(arMode === 'webxr' ? `Creando experiencia WebXR Surface para ${markerCfg.label}...` : `Creando imágenes con el Marker personalizado ${markerCfg.label} (${getMarkerStyleLabel(markerCfg.visualStyle)})...`, 'warn');
+  setStatus(arMode === 'webxr' ? `Creating WebXR Surface experience... / Creando experiencia WebXR Surface...` : `Creando imágenes con el Marker personalizado ${markerCfg.label} (${getMarkerStyleLabel(markerCfg.visualStyle)})...`, 'warn');
 
   try{
     const integratedQr = await createQrDataUrl(arUrl, style, false);
@@ -715,7 +729,7 @@ async function generate(){
     downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.label.replace(/[^A-Z0-9]+/g,'-')}_${markerCfg.visualStyle}_${type}_${style}.png`;
     downloadSeparatedBtn.classList.remove('disabled');
 
-    setStatus(arMode === 'webxr' ? `Listo. WebXR Surface Mode activado para modelo 3D.` : `Listo. El Marker personalizado es ${markerCfg.label} con estilo ${getMarkerStyleLabel(markerCfg.visualStyle)}.`, 'ok');
+    setStatus(arMode === 'webxr' ? `Ready. WebXR Surface Mode active for 3D model. / Listo. WebXR Surface Mode activo para modelo 3D.` : `Listo. El Marker personalizado es ${markerCfg.label} con estilo ${getMarkerStyleLabel(markerCfg.visualStyle)}.`, 'ok');
   }catch(e){
     console.error(e);
     integratedPreview.innerHTML = '<p>No se pudo crear la versión integrada.</p>';

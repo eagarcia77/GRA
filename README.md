@@ -77,3 +77,20 @@ Important:
 - For a URL-based 3D model to load, the model must be a direct public .glb or .gltf file.
 - Some servers block loading because of CORS. If that happens, Upload can be used for local testing.
 - WebXR markerless AR depends on device/browser support. The viewer fallback still works even when AR mode is unavailable.
+
+
+WebXR Surface Mode Verification / Verificación WebXR Surface Mode
+
+Fixed / Corregido:
+- WebXR Surface Mode is now restricted to GLB/GLTF content only.
+- If WebXR is selected for image, PDF, video, YouTube or web links, the generator shows an error instead of opening the wrong viewer.
+- Test Content now opens the generated WebXR Viewer for 3D models instead of only opening the raw model file.
+- The WebXR viewer now warns when HTTPS/secure context is missing.
+- The viewer allows direct GLB/GLTF URL and local upload for testing.
+- Added bilingual warning under Advanced AR Mode.
+
+Important / Importante:
+- WebXR markerless AR needs HTTPS or localhost.
+- A direct public .glb or .gltf URL is required.
+- Some hosting services block 3D files because of CORS.
+- If WebXR is not supported by the browser/device, the model still opens in the 3D fallback viewer.
