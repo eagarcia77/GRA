@@ -1,38 +1,133 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EAGR Learn | WebXR Surface Viewer</title>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <title>EAGR Learn | WebXR GLB/GLTF Viewer</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
   <style>
-    :root{--bg:#07111b;--panel:rgba(10,18,28,.82);--line:rgba(143,190,222,.18);--text:#eaf7ff;--muted:#9fb7c8;--green:#2ae4af;--blue:#1cb1ff;--gold:#ffd86b}
+    :root{
+      --bg:#07111b;
+      --panel:rgba(10,18,28,.86);
+      --line:rgba(143,190,222,.18);
+      --text:#eaf7ff;
+      --muted:#9fb7c8;
+      --green:#2ae4af;
+      --blue:#1cb1ff;
+      --gold:#ffd86b;
+      --danger:#ff8290;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,rgba(42,228,175,.12),transparent 28%),radial-gradient(circle at top right,rgba(28,177,255,.14),transparent 24%),linear-gradient(180deg,#061019,#091622 50%,#07111b);color:var(--text);min-height:100vh}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:
+        radial-gradient(circle at top left,rgba(42,228,175,.12),transparent 28%),
+        radial-gradient(circle at top right,rgba(28,177,255,.14),transparent 24%),
+        linear-gradient(180deg,#061019,#091622 50%,#07111b);
+      color:var(--text);
+      min-height:100vh;
+    }
     .wrap{max-width:1180px;margin:0 auto;padding:24px}
-    .hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:20px;border:1px solid var(--line);border-radius:24px;background:var(--panel);box-shadow:0 24px 60px rgba(0,0,0,.28);backdrop-filter:blur(18px);margin-bottom:18px}
+    .hero,.viewer-card,.tools-card{
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:var(--panel);
+      box-shadow:0 24px 60px rgba(0,0,0,.28);
+      backdrop-filter:blur(18px);
+    }
+    .hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:20px;margin-bottom:18px}
     .badge{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(42,228,175,.12);border:1px solid rgba(42,228,175,.22);color:#7ef1ca;font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase}
     h1{margin:.7rem 0 .3rem;font-size:clamp(2rem,5vw,3.5rem);background:linear-gradient(90deg,#fff,#b8ffe9,#9eb8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
     p{color:#d8e8f3;line-height:1.55}
-    .viewer-card{border:1px solid var(--line);border-radius:28px;background:rgba(10,18,28,.82);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.28)}
-    model-viewer{width:100%;height:min(74vh,760px);background:radial-gradient(circle at center,rgba(42,228,175,.10),rgba(8,17,27,1) 70%);--poster-color:transparent}
-    .ar-button{background:linear-gradient(135deg,var(--green),var(--blue));color:#021018;border:0;border-radius:999px;padding:14px 20px;font-weight:900;position:absolute;left:50%;bottom:28px;transform:translateX(-50%);box-shadow:0 16px 30px rgba(42,228,175,.18)}
+    .viewer-card{overflow:hidden}
+    model-viewer{
+      width:100%;
+      height:min(72vh,720px);
+      min-height:520px;
+      background:radial-gradient(circle at center,rgba(42,228,175,.10),rgba(8,17,27,1) 70%);
+      --poster-color:transparent;
+    }
+    .ar-button{
+      background:linear-gradient(135deg,var(--green),var(--blue));
+      color:#021018;
+      border:0;
+      border-radius:999px;
+      padding:14px 20px;
+      font-weight:900;
+      position:absolute;
+      left:50%;
+      bottom:28px;
+      transform:translateX(-50%);
+      box-shadow:0 16px 30px rgba(42,228,175,.18);
+      cursor:pointer;
+    }
     .fallback{padding:18px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
-    .fallback a{display:inline-flex;text-decoration:none;border-radius:999px;padding:12px 16px;background:linear-gradient(135deg,var(--gold),#ffb14d);color:#201300;font-weight:900}
-    .notice{margin-top:18px;padding:16px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:#a8becd}
-    .error{display:none;margin-top:18px;padding:16px;border-radius:18px;background:rgba(255,102,125,.12);border:1px solid rgba(255,102,125,.25);color:#ffd8de}
-    @media(max-width:800px){.hero{flex-direction:column}.fallback{grid-template-columns:1fr}model-viewer{height:68vh}}
+    .fallback a,.tools-card button,.tools-card label.button-like{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      border-radius:999px;
+      padding:12px 16px;
+      background:linear-gradient(135deg,var(--gold),#ffb14d);
+      color:#201300;
+      font-weight:900;
+      border:0;
+      cursor:pointer;
+    }
+    .tools-card{padding:18px;margin-bottom:18px}
+    .tools-grid{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:end}
+    input[type="url"]{
+      width:100%;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      font-size:1rem;
+    }
+    input[type="file"]{display:none}
+    label{font-weight:800;color:#dff3ff;display:block;margin:0 0 8px}
+    .notice,.status{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--line);
+      color:#a8becd;
+    }
+    .status.ok{border-color:rgba(42,228,175,.3);color:#b8ffe9}
+    .status.warn{border-color:rgba(255,216,107,.3);color:#ffe7a1}
+    .status.error{border-color:rgba(255,130,144,.35);color:#ffd8de}
+    .progress{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 14px;border-radius:999px;background:rgba(0,0,0,.52);color:#fff;font-weight:800;pointer-events:none}
+    @media(max-width:800px){.hero{flex-direction:column}.fallback,.tools-grid{grid-template-columns:1fr}model-viewer{height:68vh;min-height:420px}}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="hero">
       <div>
-        <span class="badge">WebXR Surface Mode</span>
+        <span class="badge">WebXR Surface Mode / Modo WebXR</span>
         <h1 id="title">EAGR Learn AR</h1>
-        <p id="description">Markerless AR viewer for GLB/GLTF 3D models. Use the AR button to place the model on a real surface when the device supports it.</p>
+        <p id="description">Markerless AR viewer for GLB/GLTF 3D models. / Visor AR sin marcador para modelos 3D GLB/GLTF.</p>
       </div>
       <span class="badge">GLB / GLTF</span>
+    </section>
+
+    <section class="tools-card">
+      <div class="tools-grid">
+        <div>
+          <label for="modelUrlInput">3D Model URL / URL del modelo 3D</label>
+          <input id="modelUrlInput" type="url" placeholder="https://example.com/model.glb"/>
+        </div>
+        <button id="loadUrlBtn" type="button">Load URL / Cargar URL</button>
+        <label class="button-like" for="localModelInput">Upload / Subir</label>
+        <input id="localModelInput" type="file" accept=".glb,.gltf,model/gltf-binary,model/gltf+json"/>
+      </div>
+      <div class="notice">
+        Use a direct public <strong>.glb</strong> or <strong>.gltf</strong> URL. Some servers block 3D files because of CORS. If the URL does not load, use the Upload option to test locally. / Use una URL pública directa <strong>.glb</strong> o <strong>.gltf</strong>. Algunos servidores bloquean archivos 3D por CORS. Si no carga, use Upload para probar localmente.
+      </div>
     </section>
 
     <section class="viewer-card">
@@ -47,17 +142,18 @@
         ar-scale="auto"
         environment-image="neutral"
         alt="3D model">
-        <button slot="ar-button" class="ar-button">Launch Markerless AR</button>
+        <button slot="ar-button" class="ar-button">Launch Markerless AR / Abrir AR sin marcador</button>
+        <div id="progress" class="progress" slot="poster">Waiting for model / Esperando modelo</div>
       </model-viewer>
       <div class="fallback">
-        <p><strong>Fallback:</strong> If WebXR is not available, rotate, zoom and inspect the 3D model in this viewer.</p>
-        <a id="openModel" href="#" target="_blank" rel="noopener">Open Model File</a>
+        <p><strong>Fallback / Respaldo:</strong> If AR is not supported, rotate, zoom and inspect the 3D model here. / Si AR no es compatible, puede rotar, acercar e inspeccionar el modelo 3D aquí.</p>
+        <a id="openModel" href="#" target="_blank" rel="noopener">Open Model File / Abrir modelo</a>
       </div>
     </section>
 
-    <div id="errorBox" class="error"></div>
+    <div id="statusBox" class="status warn">Waiting for a GLB/GLTF model. / Esperando un modelo GLB/GLTF.</div>
     <div class="notice">
-      WebXR Surface Mode works best on mobile devices and browsers that support immersive AR. Android devices may open WebXR or Scene Viewer; Apple devices may require compatible USDZ/Quick Look workflows, depending on the model and browser.
+      WebXR Surface Mode works best on compatible Android browsers. iPhone/iPad support usually requires USDZ/Quick Look; GLB can still be viewed interactively here. / WebXR Surface Mode funciona mejor en navegadores Android compatibles. En iPhone/iPad normalmente se requiere USDZ/Quick Look; GLB puede verse de forma interactiva aquí.
     </div>
   </main>
   <script src="./js/webxr-viewer.js"></script>

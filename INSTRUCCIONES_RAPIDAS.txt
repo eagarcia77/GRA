@@ -58,3 +58,22 @@ Corrections made / Correcciones realizadas:
 - Added bilingual labels to Brand Settings.
 - Removed remaining logo upload/url references.
 - Verified JavaScript syntax with node --check.
+
+
+WebXR / GLB / GLTF Viewer Verification
+
+Corrections made:
+- Rebuilt webxr-viewer.html.
+- Rebuilt js/webxr-viewer.js.
+- Added URL input inside the WebXR viewer.
+- Added Upload option for local GLB/GLTF testing.
+- Added model-viewer event handling for load and error.
+- Added browser/WebXR compatibility messaging.
+- Added fallback 3D viewer behavior when markerless AR is not supported.
+- Added bilingual English/Spanish text.
+- Verified JavaScript syntax.
+
+Important:
+- For a URL-based 3D model to load, the model must be a direct public .glb or .gltf file.
+- Some servers block loading because of CORS. If that happens, Upload can be used for local testing.
+- WebXR markerless AR depends on device/browser support. The viewer fallback still works even when AR mode is unavailable.
